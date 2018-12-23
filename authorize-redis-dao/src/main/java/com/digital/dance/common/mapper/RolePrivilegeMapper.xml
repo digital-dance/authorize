@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital.dance.common.dao.RolePrivilegeMapper">
+  <resultMap id="resultRolePrivilegeMap" type="com.digital.dance.common.model.RolePrivilege">
+    <id column="rolePrivilegeId" jdbcType="VARCHAR" property="rolePrivilegeId" />
+    <result column="roleId" jdbcType="VARCHAR" property="roleId" />
+    <result column="orgId" jdbcType="VARCHAR" property="orgId" />
+    <result column="departmentId" jdbcType="VARCHAR" property="departmentId" />
+    <result column="privilegeId" jdbcType="VARCHAR" property="privilegeId" />
+    <result column="privilegeCategoryCode" jdbcType="VARCHAR" property="privilegeCategoryCode" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="insertOn" jdbcType="TIMESTAMP" property="insertOn" />
+    <result column="insertBy" jdbcType="VARCHAR" property="insertBy" />
+    <result column="updateOn" jdbcType="TIMESTAMP" property="updateOn" />
+    <result column="updateBy" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rolePrivilegeId, roleId, orgId, departmentId, privilegeId, privilegeCategoryCode,
+    state, insertOn, insertBy, updateOn, updateBy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultRolePrivilegeMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role_privilege
+    where rolePrivilegeId = #{rolePrivilegeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_role_privilege
+    where rolePrivilegeId = #{rolePrivilegeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.digital.dance.common.model.RolePrivilege">
+    insert into sys_role_privilege (rolePrivilegeId, roleId, orgId,
+      departmentId, privilegeId, privilegeCategoryCode,
+      state, insertOn, insertBy,
+      updateOn, updateBy)
+    values (#{rolePrivilegeId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR},
+      #{departmentId,jdbcType=VARCHAR}, #{privilegeId,jdbcType=VARCHAR}, #{privilegeCategoryCode,jdbcType=VARCHAR},
+      #{state,jdbcType=INTEGER}, #{insertOn,jdbcType=TIMESTAMP}, #{insertBy,jdbcType=VARCHAR},
+      #{updateOn,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.digital.dance.common.model.RolePrivilege">
+    insert into sys_role_privilege
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rolePrivilegeId != null">
+        rolePrivilegeId,
+      </if>
+      <if test="roleId != null">
+        roleId,
+      </if>
+      <if test="orgId != null">
+        orgId,
+      </if>
+      <if test="departmentId != null">
+        departmentId,
+      </if>
+      <if test="privilegeId != null">
+        privilegeId,
+      </if>
+      <if test="privilegeCategoryCode != null">
+        privilegeCategoryCode,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="insertOn != null">
+        insertOn,
+      </if>
+      <if test="insertBy != null">
+        insertBy,
+      </if>
+      <if test="updateOn != null">
+        updateOn,
+      </if>
+      <if test="updateBy != null">
+        updateBy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rolePrivilegeId != null">
+        #{rolePrivilegeId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeId != null">
+        #{privilegeId,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeCategoryCode != null">
+        #{privilegeCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="insertOn != null">
+        #{insertOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertBy != null">
+        #{insertBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateOn != null">
+        #{updateOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.digital.dance.common.model.RolePrivilege">
+    update sys_role_privilege
+    <set>
+      <if test="roleId != null">
+        roleId = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        orgId = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        departmentId = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeId != null">
+        privilegeId = #{privilegeId,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeCategoryCode != null">
+        privilegeCategoryCode = #{privilegeCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="insertOn != null">
+        insertOn = #{insertOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertBy != null">
+        insertBy = #{insertBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateOn != null">
+        updateOn = #{updateOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        updateBy = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rolePrivilegeId = #{rolePrivilegeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.digital.dance.common.model.RolePrivilege">
+    update sys_role_privilege
+    set roleId = #{roleId,jdbcType=VARCHAR},
+      orgId = #{orgId,jdbcType=VARCHAR},
+      departmentId = #{departmentId,jdbcType=VARCHAR},
+      privilegeId = #{privilegeId,jdbcType=VARCHAR},
+      privilegeCategoryCode = #{privilegeCategoryCode,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      insertOn = #{insertOn,jdbcType=TIMESTAMP},
+      insertBy = #{insertBy,jdbcType=VARCHAR},
+      updateOn = #{updateOn,jdbcType=TIMESTAMP},
+      updateBy = #{updateBy,jdbcType=VARCHAR}
+    where rolePrivilegeId = #{rolePrivilegeId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

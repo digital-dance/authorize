@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>authorize.redis</groupId>
+		<artifactId>authorize-redis-parent</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>authorize-redis-contract</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>authorize-redis-contract</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.ini</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>authorize.redis</groupId>
+			<artifactId>authorize-redis-com-contract</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- authorize begin -->
+
+		<!--
+			authorize + ehcache jar <dependency>
+			<artifactId>ehcache-core</artifactId>
+			<groupId>net.sf.ehcache</groupId> <version>2.5.0</version>
+			</dependency> <dependency> <groupId>org.apache.authorize</groupId>
+			<artifactId>authorize-ehcache</artifactId> <version>1.2.2</version>
+			</dependency>
+		-->
+		<!-- authorize end -->
+
+		</dependencies>
+</project>

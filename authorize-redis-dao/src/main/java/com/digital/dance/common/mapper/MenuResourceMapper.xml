@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital.dance.common.dao.MenuResourceMapper">
+  <resultMap id="resultMenuResourceMap" type="com.digital.dance.common.model.MenuResource">
+    <id column="resourceId" jdbcType="VARCHAR" property="resourceId" />
+    <result column="menuId" jdbcType="VARCHAR" property="menuId" />
+    <result column="operationResourceId" jdbcType="VARCHAR" property="operationResourceId" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="insertOn" jdbcType="TIMESTAMP" property="insertOn" />
+    <result column="insertBy" jdbcType="VARCHAR" property="insertBy" />
+    <result column="updateOn" jdbcType="TIMESTAMP" property="updateOn" />
+    <result column="updateBy" jdbcType="VARCHAR" property="updateBy" />
+    <result column="operationResourceUrl" jdbcType="VARCHAR" property="operationResourceUrl" />
+    <result column="operationResourceHttpMethod" jdbcType="VARCHAR" property="operationResourceHttpMethod" />
+    <result column="routingUrl" jdbcType="VARCHAR" property="routingUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy, 
+    operationResourceUrl, operationResourceHttpMethod, routingUrl
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMenuResourceMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu_resource
+    where resourceId = #{resourceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sys_menu_resource
+    where resourceId = #{resourceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.digital.dance.common.model.MenuResource">
+    insert into sys_menu_resource (resourceId, menuId, operationResourceId, 
+      state, insertOn, insertBy, 
+      updateOn, updateBy, operationResourceUrl, 
+      operationResourceHttpMethod, routingUrl
+      )
+    values (#{resourceId,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{operationResourceId,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{insertOn,jdbcType=TIMESTAMP}, #{insertBy,jdbcType=VARCHAR}, 
+      #{updateOn,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{operationResourceUrl,jdbcType=VARCHAR}, 
+      #{operationResourceHttpMethod,jdbcType=VARCHAR}, #{routingUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.digital.dance.common.model.MenuResource">
+    insert into sys_menu_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        resourceId,
+      </if>
+      <if test="menuId != null">
+        menuId,
+      </if>
+      <if test="operationResourceId != null">
+        operationResourceId,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="insertOn != null">
+        insertOn,
+      </if>
+      <if test="insertBy != null">
+        insertBy,
+      </if>
+      <if test="updateOn != null">
+        updateOn,
+      </if>
+      <if test="updateBy != null">
+        updateBy,
+      </if>
+      <if test="operationResourceUrl != null">
+        operationResourceUrl,
+      </if>
+      <if test="operationResourceHttpMethod != null">
+        operationResourceHttpMethod,
+      </if>
+      <if test="routingUrl != null">
+        routingUrl,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null">
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceId != null">
+        #{operationResourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="insertOn != null">
+        #{insertOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertBy != null">
+        #{insertBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateOn != null">
+        #{updateOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceUrl != null">
+        #{operationResourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceHttpMethod != null">
+        #{operationResourceHttpMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="routingUrl != null">
+        #{routingUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.digital.dance.common.model.MenuResource">
+    update sys_menu_resource
+    <set>
+      <if test="menuId != null">
+        menuId = #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceId != null">
+        operationResourceId = #{operationResourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="insertOn != null">
+        insertOn = #{insertOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertBy != null">
+        insertBy = #{insertBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateOn != null">
+        updateOn = #{updateOn,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        updateBy = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceUrl != null">
+        operationResourceUrl = #{operationResourceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="operationResourceHttpMethod != null">
+        operationResourceHttpMethod = #{operationResourceHttpMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="routingUrl != null">
+        routingUrl = #{routingUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where resourceId = #{resourceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.digital.dance.common.model.MenuResource">
+    update sys_menu_resource
+    set menuId = #{menuId,jdbcType=VARCHAR},
+      operationResourceId = #{operationResourceId,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      insertOn = #{insertOn,jdbcType=TIMESTAMP},
+      insertBy = #{insertBy,jdbcType=VARCHAR},
+      updateOn = #{updateOn,jdbcType=TIMESTAMP},
+      updateBy = #{updateBy,jdbcType=VARCHAR},
+      operationResourceUrl = #{operationResourceUrl,jdbcType=VARCHAR},
+      operationResourceHttpMethod = #{operationResourceHttpMethod,jdbcType=VARCHAR},
+      routingUrl = #{routingUrl,jdbcType=VARCHAR}
+    where resourceId = #{resourceId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

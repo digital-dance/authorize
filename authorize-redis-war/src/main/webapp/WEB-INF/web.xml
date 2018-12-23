@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	
+    <context-param>
+		<param-name>spring.profiles.active</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+	<context-param>
+		<param-name>spring.profiles.default</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+	<context-param>
+		<param-name>spring.liveBeansView.mbeanDomain</param-name>
+		<param-value>dev</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring.xml</param-value>
+	</context-param>
+
+	<filter>
+		<description>字符集过滤器</description>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<description>字符集编码</description>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>springSessionRepositoryFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSessionRepositoryFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+    <!--<filter>-->
+        <!--<filter-name>ReqAndResKeeperFilter</filter-name>-->
+        <!--<filter-class>com.digital.dance.core.shiro.filter.ReqAndResKeeperFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>ReqAndResKeeperFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+	
+	<!--<filter>-->
+		<!--<filter-name>shiroFilter</filter-name>-->
+		<!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+	<!--</filter>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>shiroFilter</filter-name>-->
+		<!--<url-pattern>*.shtml</url-pattern>-->
+	<!--</filter-mapping>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>shiroFilter</filter-name>-->
+		<!--<url-pattern>/*</url-pattern>-->
+	<!--</filter-mapping>-->
+<!--	<filter-mapping>-->
+<!--		<filter-name>shiroFilter</filter-name>-->
+<!--		<url-pattern>*.html</url-pattern>-->
+<!--	</filter-mapping>-->
+
+	<listener>
+		<description>spring监听器</description>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 防止spring内存溢出监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextCleanupListener</listener-class>
+	</listener>
+	<!-- org.springframework.web.context.request.RequestContextHolder -->
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<!-- spring mvc servlet -->
+	<servlet>
+		<description>spring mvc servlet</description>
+		<servlet-name>springMvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<description>spring mvc 配置文件</description>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring-mvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMvc</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>/user/index.shtml</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/open/404.shtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/open/404.shtml</location>
+	</error-page>
+	<!-- 配置session超时时间，单位分钟 -->
+	<session-config>
+		<session-timeout>900</session-timeout>
+	</session-config>
+
+	<!-- 认证控制 sso Filter配置 -->
+
+	<filter>
+		<filter-name>loginFilter</filter-name>
+		<filter-class>com.digital.dance.framework.sso.filter.SSOLoginFilter</filter-class>
+
+		<init-param>
+			<param-name>cas_web_site_name</param-name>
+			<param-value>user</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>allowUrl</param-name>
+			<param-value>http://127.0.0.1:8008/#/home;http://127.0.0.1:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>allowSuffix</param-name>
+			<param-value>css;js;jpg;png</param-value>
+		</init-param>
+		<init-param>
+			<param-name>bizloginUrl</param-name>
+			<param-value>http://127.0.0.1:8008/user/index/home</param-value>
+		</init-param>
+		<init-param>
+			<param-name>readonlyUrl</param-name>
+			<param-value>/index/home;/login/user;login/views/default</param-value>
+		</init-param>
+		<init-param>
+			<param-name>homePageUrl</param-name>
+			<param-value>http://127.0.0.1:8008/#/home</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--
+        <servlet>
+            <servlet-name>loginFilter</servlet-name>
+            <servlet-class>com.digital.dance.framework.sso.filter.SSOLoginFilter</servlet-class>
+             初始化业务系统token验证URL，内容取决于验证servlet的mapping配置
+            <init-param>
+                <param-name>bizloginUrl</param-name>
+                <param-value>http://127.0.0.1:8008/user/index/home</param-value>
+            </init-param>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>loginFilter</servlet-name>
+             映射路径可以自定义，但需要与拦截器的[bizloginUrl]初始化参数保持一致
+            <url-pattern>/index/home</url-pattern>
+        </servlet-mapping>
+        -->
+	<!-- 权限控制 -->
+	<filter>
+		<filter-name>PermissionFilter</filter-name>
+		<filter-class>com.digital.dance.client.core.shiro.filter.PermissionFilter</filter-class>
+
+		<init-param>
+			<param-name>allowUrl</param-name>
+			<param-value>http://127.0.0.1:8008/#/home;http://127.0.0.1:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>allowSuffix</param-name>
+			<param-value>css;js;jpg;png</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>readonlyUrl</param-name>
+			<param-value>/index/home;/login/user;login/views/default</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>PermissionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>

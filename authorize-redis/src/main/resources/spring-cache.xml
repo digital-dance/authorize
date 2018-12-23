@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+    		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="false">
+
+	 <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="100"/><!-- 最大闲置 -->
+        <property name="minIdle" value="10"/><!-- 最小闲置 -->
+        <property name="testOnBorrow" value="true"/><!-- 可以获取 -->
+<!--        <property name="testOnReturn" value="true"/>-->
+		 <property name="maxTotal" value="${redis.cluster.maxTotal}"/>
+		 <property name="maxWaitMillis" value="${redis.cluster.maxWaitMills}"/>
+    </bean>
+	<!-- redis 配置,也可以把配置挪到properties配置文件中,再读取 -->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<!-- 端口，默认6379 -->
+	    <constructor-arg index="2" value="${spring.redis.port}"  name="port" type="int"/>
+	    <constructor-arg index="3" value="5000"  name="timeout" type="int"/>
+	    <constructor-arg index="1" value="${spring.redis.host}" name="host" type="java.lang.String"/>
+	    <!-- 如果你需要配置密码，请打开这里。
+	        <constructor-arg index="4" value="${spring.redis.password}" name="password" type="java.lang.String"/>
+	    -->
+	</bean>
+	<!-- 
+		这种 arguments 构造的方式，之前配置有缺点。
+		这里之前的配置有问题，因为参数类型不一致，有时候jar和环境的问题，导致参数根据index对应，会处理问题，
+		理论上加另一个 name，就可以解决，现在把name 和type都加上，更保险。
+	 -->
+
+	<!-- redis -->
+	<!--<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
+		<!--<property name="maxTotal" value="${redis.maxActive}" />-->
+		<!--<property name="maxIdle" value="${redis.maxIdle}" />-->
+		<!--<property name="maxWaitMillis" value="${redis.maxWait}" />-->
+		<!--<property name="testOnBorrow" value="${redis.testOnBorrow}" />-->
+	<!--</bean>-->
+
+	<!--<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">-->
+		<!--<property name="usePool" value="true"></property>-->
+		<!--<property name="hostName" value="${spring.redis.host}" />-->
+		<!--<property name="port" value="${spring.redis.port}" />-->
+		<!--<property name="password" value="${spring.redis.password}" />-->
+		<!--&lt;!&ndash; <property name="timeout" value="${redis.timeout}" /> &ndash;&gt;-->
+		<!--<property name="database" value="${spring.redis.default_db}" />-->
+		<!--<constructor-arg index="0" ref="jedisPoolConfig" />-->
+	<!--</bean>-->
+
+	<!--集群Redis-->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<!--Redis-CLuster-->
+		<constructor-arg index="0" ref="redisClusterConfig"/>
+
+		<!--配置Redis连接池 ，可以不配置，使用默认就行！-->
+		<constructor-arg index="1" ref="jedisPoolConfig"/>
+	</bean>
+
+	<!--集群模式配置-->
+	<bean id="redisClusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+		<property name="maxRedirects" value="${redis.cluster.maxRedirects}"/>
+		<property name="clusterNodes">
+			<set>
+				<bean id="cluster0" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster0.host}"/>
+					<constructor-arg name="port" value="${redis.cluster0.port}"/>
+				</bean>
+				<bean id="cluster1" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster1.host}"/>
+					<constructor-arg name="port" value="${redis.cluster1.port}"/>
+				</bean>
+				<bean id="cluster2" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster2.host}"/>
+					<constructor-arg name="port" value="${redis.cluster2.port}"/>
+				</bean>
+				<bean id="cluster3" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster3.host}"/>
+					<constructor-arg name="port" value="${redis.cluster3.port}"/>
+				</bean>
+				<bean id="cluster4" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster4.host}"/>
+					<constructor-arg name="port" value="${redis.cluster4.port}"/>
+				</bean>
+				<bean id="cluster5" class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg name="host" value="${redis.cluster5.host}"/>
+					<constructor-arg name="port" value="${redis.cluster5.port}"/>
+				</bean>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory" />
+	</bean>
+
+
+	<!-- 替代默认使用cookie,这里使用的是httpheader -->
+	<!-- <bean id="httpSessonStrategy" class="org.springframework.session.web.http.HeaderHttpSessionStrategy"/> -->
+	<!-- 将session放入redis -->
+	<bean id="redisHttpSessionConfiguration" class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+		<property name="maxInactiveIntervalInSeconds" value="1800" />
+		<!-- <property name="httpSessionStrategy" ref="httpSessonStrategy"/> -->
+	</bean>
+
+	<!-- 定时任务相关配置 -->
+	<task:executor id="executor" pool-size="10" queue-capacity="128"/>
+	<task:scheduler id="scheduler" pool-size="10"/>
+	<task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="true"/>
+	<!-- 让Spring Session不再执行config命令 -->
+
+	<bean id="redisFactory" class="com.digital.dance.framework.codis.client.RedisFactory">
+		<property name="config" ref="jedisPoolConfig"/>
+		<property name="proxyHost" value="${redis.host}"/>
+		<property name="port" value="${redis.port}"/>
+		<property name="subSysName" value="${codis.subSysName}"/>
+		<property name="authpassword" value="${codis.authpassword}"/>
+		<property name="timeout" value="${redis.cache.timeout}"/>
+		<property name="nodes" value="${redis.nodes}"/>
+	</bean>
+	<bean id="codis" class="com.digital.dance.framework.codis.impl.CodisImpl">
+		<property name="salt" value="${codis.salt}"/>
+		<property name="redisFactory" ref="redisFactory"/>
+	</bean>
+
+	<bean id="redis" class="com.digital.dance.framework.codis.impl.CodisImpl">
+		<property name="salt" value="${codis.salt}"/>
+		<property name="redisFactory" ref="redisFactory"/>
+	</bean>
+
+	<bean id="jedisManager" class="com.digital.dance.core.shiro.cache.JedisManager">
+		<property name="jedisPool" ref="jedisPool"/>
+		<property name="expireTime" value="1200"/>
+		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
+		<property name="nodes" value="${redis.nodes}"/>
+		<property name="codis" ref="codis"/>
+	</bean>
+
+	<util:constant static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"/>
+	<context:component-scan base-package="org.springframework.web.filter.DelegatingFilterProxy"></context:component-scan>
+</beans>

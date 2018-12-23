@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>authorize.redis</groupId>
+	<artifactId>authorize-redis-parent</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>authorize-redis-parent</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+<modules>
+	<module>authorize-redis-commons</module>
+  	<module>authorize-redis-dao</module>
+	<module>authorize-redis-com-contract</module>
+	<module>authorize-redis-contract</module>
+	<module>authorize-redis</module>
+  	<module>authorize-redis-web</module>
+	<module>authorize-redis-war</module>
+    <module>authorize-redis-client</module>
+</modules>
+
+	<!--<distributionManagement>-->
+		<!--<repository>-->
+			<!--<id>nexus-releases</id>-->
+			<!--<name>Internal Releases</name>-->
+			<!--<url>http://111.47.12.211:18081/nexus/content/repositories/releases</url>-->
+		<!--</repository>-->
+
+		<!--<snapshotRepository>-->
+			<!--<id>nexus-snapshots</id>-->
+			<!--<name>Internal Snapshots</name>-->
+			<!--<url>http://111.47.12.211:18081/nexus/content/repositories/snapshots</url>-->
+		<!--</snapshotRepository>-->
+	<!--</distributionManagement>-->
+	<distributionManagement>
+		<repository>
+			<id>maven-releases</id><!-- 这个就是nexus库repository的标识 -->
+			<name>Internal Releases</name>
+			<url>http://localhost:8081/repository/maven-releases</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>maven-snapshots</id><!-- 这个就是nexus库repository的标识 -->
+			<name>Internal Snapshots</name>
+			<url>http://localhost:8081/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.ini</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+
+</project>

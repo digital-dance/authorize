@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.digital.dance.common.dao.PermissionMapper">
+    <resultMap id="resultResourceMap" type="com.digital.dance.common.model.SResource">
+
+        <id column="resourceId" property="resourceId" jdbcType="VARCHAR" />
+        <result column="menuId" property="menuId" jdbcType="VARCHAR" />
+
+        <result column="operationResourceId" property="operationResourceId" jdbcType="VARCHAR" />
+
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="insertOn" property="insertOn" jdbcType="TIMESTAMP" />
+        <result column="insertBy" property="insertBy" jdbcType="VARCHAR" />
+        <result column="updateOn" property="updateOn" jdbcType="TIMESTAMP" />
+        <result column="updateBy" property="updateBy" jdbcType="VARCHAR" />
+        <result column="operationResourceUrl" property="url" jdbcType="VARCHAR" />
+        <result column="operationResourceHttpMethod" property="httpMethod" jdbcType="VARCHAR" />
+        <result column="routingUrl" property="routingUrl" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="listRoleBranchResource" resultType="com.digital.dance.common.model.RoleBranchResource">
+        SELECT a.resourceId resourceId, a.menuId, a.routingUrl routingUrl, a.operationResourceUrl url,
+        a.operationResourceHttpMethod httpMethod, rr.roleId roleId, rr.orgId orgId, rr.departmentId departmentId
+        FROM sys_menu_resource a, sys_role_privilege rr
+        WHERE a.resourceId = rr.privilegeId
+    </select>
+
+
+    <select id="listPermissionByUserAgentId" parameterType="String" >
+        select rpr.resourceId , rpr.menuId, rpr.routingUrl, rpr.url,
+        rpr.httpMethod from (SELECT a.resourceId resourceId, a.menuId, a.routingUrl routingUrl, a.operationResourceUrl url,
+        a.operationResourceHttpMethod httpMethod, rr.roleId roleId, rr.orgId orgId, rr.departmentId departmentId
+        FROM sys_menu_resource a, sys_role_privilege rr
+        where a.resourceId = rr.privilegeId) rpr, sys_org_role  sor , sys_user_role sur
+        where (rpr.roleId = sor.roleId) and (rpr.orgId = sor.orgId) and (rpr.departmentId = sor.departmentId)
+        and (sor.sysOrgRoleId = sur.sysOrgRoleId) and (sur.userId = #{userAgentId})
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="String">
+        delete from sys_menu_resource
+        where resource_id = #{resourceId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.digital.dance.common.model.SResource">
+        insert into sys_menu_resource (resourceId, menuId, operationResourceId,
+        state, insertOn, insertBy,
+        updateOn, updateBy, operationResourceUrl,
+        operationResourceHttpMethod, routingUrl
+        )
+        values (#{resourceId,jdbcType=VARCHAR}, #{menuId,jdbcType=VARCHAR}, #{operationResourceId,jdbcType=VARCHAR},
+        #{state,jdbcType=INTEGER}, #{insertOn,jdbcType=TIMESTAMP}, #{insertBy,jdbcType=VARCHAR},
+        #{updateOn,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+        #{httpMethod,jdbcType=VARCHAR}, #{routingUrl,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.digital.dance.common.model.SResource">
+        update sys_menu_resource
+        <set>
+            <if test="menuId != null">
+                menuId = #{menuId,jdbcType=VARCHAR},
+            </if>
+            <if test="operationResourceId != null">
+                operationResourceId = #{operationResourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="insertOn != null">
+                insertOn = #{insertOn,jdbcType=TIMESTAMP},
+            </if>
+            <if test="insertBy != null">
+                insertBy = #{insertBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateOn != null">
+                updateOn = #{updateOn,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                updateBy = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                operationResourceUrl = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="httpMethod != null">
+                operationResourceHttpMethod = #{httpMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="routingUrl != null">
+                routingUrl = #{routingUrl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where resourceId = #{resourceId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="String" resultMap="resultResourceMap">
+        select resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy,
+        operationResourceUrl, operationResourceHttpMethod, routingUrl
+        from sys_menu_resource
+        where resource_id = #{resourceId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="resultResourceMap">
+        select resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy,
+        operationResourceUrl, operationResourceHttpMethod, routingUrl
+        from sys_menu_resource
+    </select>
+    <select id="selectPagedAll" parameterType="com.digital.dance.common.model.SResource" resultMap="resultResourceMap">
+        select resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy,
+        operationResourceUrl, operationResourceHttpMethod, routingUrl
+        from sys_menu_resource where 1=1
+        <if test="resourceId != null">
+            and resource_id =#{resourceId,jdbcType=VARCHAR}
+        </if>
+        <if test="resourceName != null">
+            and resource_name =#{resourceName,jdbcType=VARCHAR}
+        </if>
+        <!--<if test="httpMethod != null">-->
+            <!--and httpMethod =#{httpMethod,jdbcType=VARCHAR}-->
+        <!--</if>-->
+        <if test="matchPath != null">
+            and match_path =#{matchPath,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+            and type =#{type,jdbcType=VARCHAR}
+        </if> limit #{pageSize,jdbcType=INTEGER} offset #{offsetNum,jdbcType=INTEGER}
+    </select>
+</mapper>
