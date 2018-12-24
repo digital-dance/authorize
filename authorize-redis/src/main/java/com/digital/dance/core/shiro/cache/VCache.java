@@ -20,19 +20,6 @@ import com.digital.dance.common.utils.*;
 @SuppressWarnings("unchecked")
 public class VCache {
 
-
-	/****
-	 *
-	 *
-	 * 这里老有同学问，这个VCache和 {@link JedisManager} 有什么区别，
-	 *
-	 * 没啥区别，我只是想把shiro的操作和 业务Cache的操作分开
-	 *
-	 *
-	 *
-	 */
-
-
 	//final static JedisManager J = SpringContextUtil.getBean("jedisManager", JedisManager.class);
 	//static JedisManager J = SpringUtils.getBean("jedisManager");
 	static JedisManager J;
@@ -53,11 +40,26 @@ public class VCache {
 			try {
 				J = SpringUtils.getBean("jedisManager");
 			} catch (Exception e) {
-
+				LoggerUtils.fmtError( VCache.class, e, " [%s] getJ失败", e.getMessage() );
 				e.printStackTrace();
 			}
 		}
 		return J;
+	}
+
+	public static String buildKey(String key){
+		Codis jedis = null;
+
+		try {
+			jedis = getJ().getCodis();
+
+			return jedis.buildKey( key );
+		} catch (Exception e) {
+			LoggerUtils.fmtError( VCache.class, e, " [%s] buildKey失败", e.getMessage() );
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public static Set<String> getKeysByPrefix(String prefix){
@@ -66,15 +68,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-			Set<String> set = jedis.getKeysByPrefix(prefix +"*");
+			Set<String> set = jedis.getKeysByPrefix( "*" + prefix + "*" );
 			return set;
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError(VCache.class, e, " [%s] redis key: getKeysByPrefix失败", "*" + prefix + "*" );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jedis, isBroken);
-//		}
+
 		return null;
 	}
 
@@ -84,15 +85,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-			int set = jedis.getKeysCountByPrefix("*" + prefix +"*");
+			int set = jedis.getKeysCountByPrefix( "*" + prefix + "*" );
 			return set;
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError(VCache.class, e, " [%s] redis key: getKeysCountByPrefix失败", "*" + prefix + "*" );
 			e.printStackTrace();
 		}
-//		finally {
-//			finallyreturnResource(jedis, isBroken);
-//		}
+
 		return 0;
 	}
 
@@ -102,33 +102,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-			jedis.delKeysByPrefix("*" + prefix + "*");
-//			Iterator<String> it = set.iterator();
-//
-//			keys = new String[set.size()];
-//
-//
-//			while(it.hasNext()){
-//				String keyStr = it.next();
-//				keys[i] = keyStr;
-//				i++;
-//
-//				//jedis.del(keyStr);
-//				//delByKey(keyStr);
-//			}
-//			if(i > 0){
-//				jedis.del(keys);
-//				delByKey(keys);
-//			}
-			LoggerUtils.fmtDebug(VCache.class," [%s] redis key: del成功",  "*" + prefix + "*" );
+			jedis.delKeysByPrefix( "*" + prefix + "*" );
+
+			LoggerUtils.fmtDebug(VCache.class," [%s] redis key: delKeysByPrefix成功",  "*" + prefix + "*" );
 		} catch (Exception e) {
 			isBroken = true;
-			LoggerUtils.fmtError(VCache.class, e, " [%s] redis key: del失败", "*" + prefix + "*" );
+			LoggerUtils.fmtError(VCache.class, e, " [%s] redis key: delKeysByPrefix失败", "*" + prefix + "*" );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jedis, isBroken);
-//		}
 
 	}
 	
@@ -145,17 +126,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			return SerializeUtil.deserialize(jds.get(skey),requiredType);
+
 			return jedis.get(key, requiredType);
         } catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] get失败", e.getMessage() );
             e.printStackTrace();
         }
-//        finally {
-//            returnResource(jds, isBroken);
-//        }
+
 		return null;
 	}
 	/**
@@ -169,17 +147,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			byte[] svalue = SerializeUtil.serialize(value);
+
 			jedis.set(key, value);
         } catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] set失败", e.getMessage() );
             e.printStackTrace();
         }
-//        finally {
-//            returnResource(jds, isBroken);
-//        }
+
 	}
 	/**
 	 * 过期时间的
@@ -193,17 +168,13 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			byte[] svalue = SerializeUtil.serialize(value);
+
 			jedis.setex(key, timer, value);
         } catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setex失败", e.getMessage() );
             e.printStackTrace();
         }
-//        finally {
-//            returnResource(jds, isBroken);
-//        }
 		
 	}
 	public static <K> Boolean expire(String key, int timeout, final TimeUnit unit) {
@@ -212,19 +183,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			long rawTimeout = TimeoutUtils.toSeconds(timeout, unit);
-//			//jds.expire(skey, (int)rawTimeout);
+
 			jedis.expire(key, timeout, unit);
 			isBroken = true;
 		} catch (Exception e) {
-
+			LoggerUtils.fmtError( VCache.class, e, " [%s] expire失败", e.getMessage() );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jds, isBroken);
-//		}
+
 		return isBroken;
 	}
 
@@ -234,19 +200,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] skey = SerializeUtil.serialize(key);
 
-			//jds.expire(skey, (int)rawTimeout);
 			jedis.expire(key, milliseconds);
 			isBroken = true;
 		} catch (Exception e) {
-
+			LoggerUtils.fmtError( VCache.class, e, " [%s] expire失败", e.getMessage() );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jds, isBroken);
-//		}
+
 		return isBroken;
 	}
 
@@ -256,17 +217,15 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jedis.select(dbIndex);
-			//jedis.set(key, value);
+
 			if (expireTime > 0)
 				jedis.expire(dbIndex, key, expireTime);
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] expire失败", e.getMessage() );
 			throw e;
 		}
-//		finally {
-//			returnResource(jedis, isBroken);
-//		}
+
 	}
 
 	/**
@@ -283,23 +242,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] mkey = SerializeUtil.serialize(mapkey);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			List<byte[]> result = jds.hmget(mkey, skey);
-//			if(null != result && result.size() > 0 ){
-//				byte[] x = result.get(0);
-//				T resultObj = SerializeUtil.deserialize(x, requiredType);
-//				return resultObj;
-//			}
+
 			return jedis.getVByMap( mapkey, key, requiredType);
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getVByMap失败", e.getMessage() );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jds, isBroken);
-//		}
+
 		return null;
 	}
 	/**
@@ -314,20 +264,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] mkey = SerializeUtil.serialize(mapkey);
-//			byte[] skey = SerializeUtil.serialize(key);
-//			byte[] svalue = SerializeUtil.serialize(value);
-//			jds.hset(mkey, skey,svalue);
+
 			jedis.setVByMap( mapkey, key, value );
         } catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setVByMap失败", e.getMessage() );
             e.printStackTrace();
         }
-//        finally {
-//            returnResource(jds, isBroken);
-//        }
-		
+
 	}
 	/**
 	 * 删除Map里的值
@@ -341,21 +285,14 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-			//jds.select(0);
-//			byte[][] dx = new byte[dkey.length][];
-//			for (int i = 0; i < dkey.length; i++) {
-//				dx[i] = SerializeUtil.serialize(dkey[i]);
-//			}
-//			byte[] mkey = SerializeUtil.serialize(mapKey);
-//			Long result = jds.hdel(mkey, dx);
+
 			return jedis.delByMapKey( mapKey, dkey );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] delByMapKey失败", e.getMessage() );
 			e.printStackTrace();
 		}
-//		finally {
-//			returnResource(jds, isBroken);
-//		}
+
 		return new Long(0);
 	}
 	
@@ -374,17 +311,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(setKey);
-//			Set<T> set = new TreeSet<T>();
-//			Set<byte[]> xx = jds.smembers(lkey);
-//			for (byte[] bs : xx) {
-//				T t = SerializeUtil.deserialize(bs, requiredType);
-//				set.add(t);
-//			}
+
 			return jedis.getVByList( setKey, requiredType );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getVByList失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return null;
@@ -400,11 +331,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			Long result = jds.scard(setKey);
+
 			return jedis.getLenBySet( setKey );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getLenBySet失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return null;
@@ -420,16 +351,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			Long result = 0L;
-//			if(null == dkey){
-//				result = jds.srem(key);
-//			}else{
-//				result = jds.del(key);
-//			}
+
 			return jedis.delSetByKey( key, dkey );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] delSetByKey失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return new Long(0);
@@ -445,11 +371,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			String result = jds.srandmember(key);
+
 			return jedis.srandmember( key );
 		} catch (Exception e){ 
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] srandmember失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return null;
@@ -465,11 +391,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			jds.sadd(setKey, value);
+
 			jedis.setVBySet( setKey, value);
 		} catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setVBySet失败", e.getMessage() );
             e.printStackTrace();
         }
 	}
@@ -484,11 +410,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			Set<String> result = jds.smembers(key);
+
 			return jedis.getSetByKey( key );
 		} catch (Exception e) {
             isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getSetByKey失败", e.getMessage() );
             e.printStackTrace();
         }
         return null;
@@ -507,13 +433,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(listKey);
-//			byte[] svalue = SerializeUtil.serialize(value);
-//			jds.rpush(lkey, svalue);
+
 			jedis.setVByList( listKey, value );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setVByList失败", e.getMessage() );
 			e.printStackTrace();
 		}
 	}
@@ -530,12 +454,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//
-//			jds.rpush(listKey, value);
+
 			jedis.setKVByList( listKey, value );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setKVByList失败", e.getMessage() );
 			e.printStackTrace();
 		}
 	}
@@ -551,17 +474,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(listKey);
-//			//List<byte[]> valueBs = new ArrayList<>();
-//			for(Object obj : values){
-//				byte[] svalue = SerializeUtil.serialize(obj);
-//				//valueBs.add(svalue);
-//				jds.rpush(lkey, svalue);
-//			}
+
 			jedis.setVByListMutiElements( listKey, values );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] setVByListMutiElements失败", e.getMessage() );
 			e.printStackTrace();
 		}
 	}
@@ -581,17 +498,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(listKey);
-//			List<T> list = new ArrayList<T>();
-//			List<byte[]> xx = jds.lrange(lkey,start,end);
-//			for (byte[] bs : xx) {
-//				T t = SerializeUtil.deserialize(bs, requiredType);
-//				list.add(t);
-//			}
+
 			return jedis.getVByList( listKey, start, end, requiredType );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getVByList失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return null;
@@ -607,12 +518,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(listKey);
-//			Long result = jds.llen(lkey);
+
 			return jedis.getLenByList( listKey );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] getLenByList失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return null;
@@ -628,15 +538,11 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[][] dx = new byte[dkey.length][];
-//			for (int i = 0; i < dkey.length; i++) {
-//				dx[i] = SerializeUtil.serialize(dkey[i]);
-//			}
-//			Long result = jds.del(dx);
+
 			return jedis.delByKey( dkey );
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] delByKey失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return new Long(0);
@@ -652,8 +558,7 @@ public class VCache {
 		boolean isBroken = false;
 		try {
 			jedis = getJ().getCodis();
-//			jds.select(0);
-//			byte[] lkey = SerializeUtil.serialize(existskey);
+
 			return jedis.exists(existskey);
 		} catch (Exception e) {
 			isBroken = true;
@@ -669,11 +574,7 @@ public class VCache {
 	public static void returnResource(Jedis jedis, boolean isBroken) {
         if (jedis == null)
             return;
-//        if (isBroken)
-//            J.getJedisPool().returnBrokenResource(jedis);
-//        else
-//        	J.getJedisPool().returnResource(jedis);
-//        版本问题
+
         jedis.close();
 	}
 }

@@ -24,11 +24,6 @@ import java.util.TreeSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by hpe on 2017/11/23.
- */
-
-
 public class CacheInitializer implements
         ApplicationListener<ContextRefreshedEvent> {
     @Autowired
@@ -106,7 +101,8 @@ public class CacheInitializer implements
         }
         rbos.removeAll(indexs);
         rbos.add(resourceBo);
-        VCache.delByKey(key);
+
+        VCache.delByKey( VCache.buildKey( key ) );
         VCache.setVByListMutiElements( key, rbos );
     }
 
@@ -122,7 +118,8 @@ public class CacheInitializer implements
         }
         rbos.removeAll(indexs);
         //rbos.add(resourceBo);
-        VCache.delByKey(key);
+
+        VCache.delByKey( VCache.buildKey( key ) );
         VCache.setVByListMutiElements(key, rbos);
     }
 
@@ -172,7 +169,7 @@ public class CacheInitializer implements
         rbos.removeAll(indexs);
         rbos.add(resourceBo);
 
-        VCache.delByKey(key);
+        VCache.delByKey( VCache.buildKey( key ) );
         VCache.setVByListMutiElements( key, rbos );
     }
 
@@ -189,7 +186,7 @@ public class CacheInitializer implements
         rbos.removeAll(indexs);
         //rbos.add(resourceBo);
 
-        VCache.delByKey(key);
+        VCache.delByKey( VCache.buildKey( key ) );
         VCache.setVByListMutiElements(key, rbos);
     }
 

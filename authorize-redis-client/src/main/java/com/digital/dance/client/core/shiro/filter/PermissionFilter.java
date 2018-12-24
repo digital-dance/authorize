@@ -9,6 +9,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.digital.dance.client.core.shiro.cache.VCache;
 import com.digital.dance.common.utils.*;
 import com.digital.dance.client.core.shiro.service.impl.PrivilegeCacheManager;
 import com.digital.dance.framework.infrastructure.commons.Log;
@@ -159,6 +160,11 @@ public class PermissionFilter implements Filter {
 		boolean retValue = false;
 		if( loginInfo != null ) {
 			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
+			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
+				String key = PrivilegeCacheManager.getUserRolesKey( loginInfo.getUserId() );
+				long len = VCache.getLenByList( key );
+				loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
+			}
 			if( loginUserRoles == null || loginUserRoles.size() < 1 )return false;
 			for (LoginUserRole loginUserRole : loginUserRoles) {
 				List<ResourceBo> resourceBos = PrivilegeCacheManager.listRoleBranchResourceByKey(loginUserRole.getRoleId()
