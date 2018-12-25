@@ -73,4 +73,29 @@ public class ShiroFilterUtils {
 			}
 		}
 	}
+
+	public static void responseOutput(ServletResponse response, ResponseVo resultVo) {
+		Exception localThrowable0 = null;
+		PrintWriter out = null;
+		try {
+			response.setCharacterEncoding("UTF-8");
+			out = response.getWriter();
+			out.write(GsonUtils.toJsonStr(resultVo));
+		} catch (Exception localThrowable) {
+			localThrowable0 = localThrowable;
+			LoggerUtils.error(CLAZZ, localThrowable0.getMessage(), localThrowable0);
+
+		} finally {
+			if (out != null)
+
+				try {
+					out.flush();
+					out.close();
+				} catch (Exception x2) {
+					if (localThrowable0 != null)
+						localThrowable0.addSuppressed(x2);
+					LoggerUtils.error(CLAZZ, localThrowable0.getMessage(), localThrowable0);
+				}
+		}
+	}
 }

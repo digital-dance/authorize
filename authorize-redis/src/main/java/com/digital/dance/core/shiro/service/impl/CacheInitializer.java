@@ -264,4 +264,13 @@ public class CacheInitializer implements
 //
 //        VCache.setVByList(key, resourceBo);
 //    }
+
+    public static String getUserRolesKey( String userId ){
+
+        return getUserRolesKeyPrefix() + userId;
+    }
+
+    public static String getUserRolesKeyPrefix( ){
+        return "_UserRoles_";
+    }
 }

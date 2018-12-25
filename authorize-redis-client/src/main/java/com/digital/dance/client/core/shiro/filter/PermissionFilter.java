@@ -137,13 +137,25 @@ public class PermissionFilter implements Filter {
 
 		}
 
+		if( loginInfo != null ) {
+			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
+			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
+				String key = PrivilegeCacheManager.getUserRolesKey( loginInfo.getUserId() );
+				long len = VCache.getLenByList( key );
+				loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
+				loginInfo.setUserRoles(loginUserRoles);
+				SSOLoginFilter.setLoginInfo2Session(request, loginInfo);
+			}
+
+		}
+
 		//验证基于角色的访问权限
 		if( loginInfo != null && loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedRole( requestPath, requestHttpMethod, loginInfo) ){
 
 			chain.doFilter(request, response);
 			return;
-		} else if( "get".equals(requestHttpMethod) && loginInfo != null && !loginInfo.getRolePrivilegeInd()
+		} else if( loginInfo != null && !loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedUser( requestPath, requestHttpMethod, loginInfo) ){
 			//通过基于用户的访问权限
 			chain.doFilter(request, response);
@@ -160,11 +172,7 @@ public class PermissionFilter implements Filter {
 		boolean retValue = false;
 		if( loginInfo != null ) {
 			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
-			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
-				String key = PrivilegeCacheManager.getUserRolesKey( loginInfo.getUserId() );
-				long len = VCache.getLenByList( key );
-				loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
-			}
+
 			if( loginUserRoles == null || loginUserRoles.size() < 1 )return false;
 			for (LoginUserRole loginUserRole : loginUserRoles) {
 				List<ResourceBo> resourceBos = PrivilegeCacheManager.listRoleBranchResourceByKey(loginUserRole.getRoleId()
@@ -207,7 +215,7 @@ public class PermissionFilter implements Filter {
 					return retValue;
 				}
 			}
-			if  ( resourceBo.getRoutingUrl() != null && "".equals( resourceBo.getRoutingUrl() ) ) {
+			if  ( "get".equals(requestHttpMethod) && resourceBo.getRoutingUrl() != null && "".equals( resourceBo.getRoutingUrl() ) ) {
 				String routingUrlRegex = resourceBo.getRoutingUrl().replace("/", "\\/").replace("**", "(.*)?");
 				Pattern routingUrlPattern = Pattern.compile(routingUrlRegex);
 				Matcher routingUrlM = routingUrlPattern.matcher(requestPath);

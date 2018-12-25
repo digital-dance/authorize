@@ -9,6 +9,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.digital.dance.common.utils.Constants;
+import com.digital.dance.common.utils.ResponseVo;
+import com.digital.dance.core.shiro.cache.VCache;
 import com.digital.dance.commons.security.utils.RSACoderUtil;
 import com.digital.dance.commons.serialize.json.utils.JSONUtils;
 import com.digital.dance.core.shiro.service.impl.CacheInitializer;
@@ -138,16 +141,33 @@ public class PermissionFilter implements Filter {
 
 		}
 
+		if( loginInfo != null ) {
+			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
+			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
+				String key = CacheInitializer.getUserRolesKey( loginInfo.getUserId() );
+				long len = VCache.getLenByList( key );
+				loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
+				loginInfo.setUserRoles(loginUserRoles);
+				SSOLoginFilter.setLoginInfo2Session(request, loginInfo);
+			}
+
+		}
+
 		if( loginInfo != null && loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedRole( requestPath, requestHttpMethod, loginInfo) ){
 
 			chain.doFilter(request, response);
 			return;
-		} else if( "get".equals(requestHttpMethod) && loginInfo != null && !loginInfo.getRolePrivilegeInd()
+		} else if( loginInfo != null && !loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedUser( requestPath, requestHttpMethod, loginInfo) ){
 
 			chain.doFilter(request, response);
 			return;
+		} else {
+			ResponseVo responseVo = new ResponseVo();
+			responseVo.setCode(Constants.ReturnCode.NOPRIVILEGE.Code());
+			responseVo.setMsg("无访问权限:" + requestPath + ":" + requestHttpMethod);
+			ShiroFilterUtils.responseOutput(response, responseVo);
 		}
 
 	}
@@ -196,7 +216,7 @@ public class PermissionFilter implements Filter {
 					return retValue;
 				}
 			}
-			if  ( resourceBo.getRoutingUrl() != null && "".equals( resourceBo.getRoutingUrl() ) ) {
+			if  ( "get".equals(requestHttpMethod) && resourceBo.getRoutingUrl() != null && "".equals( resourceBo.getRoutingUrl() ) ) {
 				String routingUrlRegex = resourceBo.getRoutingUrl().replace("/", "\\/").replace("**", "(.*)?");
 				Pattern routingUrlPattern = Pattern.compile(routingUrlRegex);
 				Matcher routingUrlM = routingUrlPattern.matcher(requestPath);
