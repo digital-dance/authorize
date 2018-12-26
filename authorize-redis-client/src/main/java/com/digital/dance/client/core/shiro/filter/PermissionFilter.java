@@ -197,7 +197,7 @@ public class PermissionFilter implements Filter {
 		boolean retValue = false;
 		for (ResourceBo resourceBo : resourceBos) {
 			if ( resourceBo == null ) continue;
-			if ( resourceBo.getUrl() != null && "".equals(resourceBo.getUrl()) ) {
+			if ( resourceBo.getUrl() != null && !"".equals( resourceBo.getUrl() ) ) {
 
 				String resourceHttpMethod = StringTools.isEmpty(resourceBo.getHttpMethod()) ? "" : resourceBo.getHttpMethod().toLowerCase();
 				String regex = resourceBo.getUrl().replace("/", "\\/").replace("**", "(.*)?");
@@ -215,7 +215,7 @@ public class PermissionFilter implements Filter {
 					return retValue;
 				}
 			}
-			if  ( "get".equals(requestHttpMethod) && resourceBo.getRoutingUrl() != null && "".equals( resourceBo.getRoutingUrl() ) ) {
+			if  ( "get".equals(requestHttpMethod) && resourceBo.getRoutingUrl() != null && !"".equals( resourceBo.getRoutingUrl() ) ) {
 				String routingUrlRegex = resourceBo.getRoutingUrl().replace("/", "\\/").replace("**", "(.*)?");
 				Pattern routingUrlPattern = Pattern.compile(routingUrlRegex);
 				Matcher routingUrlM = routingUrlPattern.matcher(requestPath);
