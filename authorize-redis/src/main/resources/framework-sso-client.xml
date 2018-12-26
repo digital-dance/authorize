@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:ldap="http://www.springframework.org/schema/ldap"
+	xsi:schemaLocation="
+	 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/ldap http://www.springframework.org/schema/ldap/spring-ldap.xsd"
+	default-lazy-init="false">
+
+	<bean id="ssologinManageHelper" class="com.digital.dance.framework.sso.util.SSOLoginManageHelper">
+		<property name="redis" ref="codis" />
+		<property name="webSiteCode" value="${webSiteCode}" />
+		<property name="casLoginurl" value="${sso.login.cas.url}" />
+		<property name="casErrorUrl" value="${sso.error.cas.url}" />
+		<property name="apiLoginUrl" value="${sso.login.api.url}" />
+		<property name="securitySalt" value="${sso.login.security.salt}" />
+		<property name="cacheExpiredSeconds" value="${cacheExpiredSeconds}" />
+		<property name="sessionDataExpiredSeconds" value="${sessionDataExpiredSeconds}" />
+		<property name="sessionInfoExpiredSeconds" value="${sessionInfoExpiredSeconds}" />
+		<property name="loginServiceUrl" value="${sso.login.service.url}" />
+	</bean>
+<!-- 	
+	<bean id="defaultMQPushConsumerMessageSelector" class="com.midea.finance.framework.message.selector.DefaultMQPushConsumerMessageSelector">
+		<property name="namesrvAddr" value="${rocketmq.namesrvAddr}" />
+		<property name="consumerGroup" value="${rocketmq.producerGroup}" />
+		<property name="messageModel" value="CLUSTERING" />
+		<property name="messageListener" value="CONCURRENTLY" />
+		<property name="handlermap">
+			<map>
+				<entry key="cas-authencate-logout">
+					<bean class="com.midea.finance.framework.sso.handler.MideaSSOLoginMessageHandler">
+						<property name="ssologinManageHelper" ref="ssologinManageHelper"/>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<import resource="classpath*:conf/framework-sso-dubbo.xml" /> -->
+</beans>

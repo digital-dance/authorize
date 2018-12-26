@@ -14,15 +14,20 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 	        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 	default-lazy-init="false">
-
-	 <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxIdle" value="100"/><!-- 最大闲置 -->
-        <property name="minIdle" value="10"/><!-- 最小闲置 -->
-        <property name="testOnBorrow" value="true"/><!-- 可以获取 -->
-<!--        <property name="testOnReturn" value="true"/>-->
-		 <property name="maxTotal" value="${redis.cluster.maxTotal}"/>
-		 <property name="maxWaitMillis" value="${redis.cluster.maxWaitMills}"/>
-    </bean>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${redis.maxActive}"/>
+		<property name="maxIdle" value="${redis.maxIdle}"/>
+		<property name="maxWaitMillis" value="${redis.maxWait}"/>
+		<property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+	</bean>
+	 <!--<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
+        <!--<property name="maxIdle" value="100"/>&lt;!&ndash; 最大闲置 &ndash;&gt;-->
+        <!--<property name="minIdle" value="10"/>&lt;!&ndash; 最小闲置 &ndash;&gt;-->
+        <!--<property name="testOnBorrow" value="true"/>&lt;!&ndash; 可以获取 &ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="testOnReturn" value="true"/>&ndash;&gt;-->
+		 <!--<property name="maxTotal" value="${redis.cluster.maxTotal}"/>-->
+		 <!--<property name="maxWaitMillis" value="${redis.cluster.maxWaitMills}"/>-->
+    <!--</bean>-->
 	<!-- redis 配置,也可以把配置挪到properties配置文件中,再读取 -->
 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
 		<constructor-arg index="0" ref="jedisPoolConfig" />
@@ -117,7 +122,9 @@
 	<task:executor id="executor" pool-size="10" queue-capacity="128"/>
 	<task:scheduler id="scheduler" pool-size="10"/>
 	<task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="true"/>
+	<util:constant static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"/>
 	<!-- 让Spring Session不再执行config命令 -->
+	<!-- 定时任务相关配置 -->
 
 	<bean id="redisFactory" class="com.digital.dance.framework.codis.client.RedisFactory">
 		<property name="config" ref="jedisPoolConfig"/>
@@ -146,6 +153,5 @@
 		<property name="codis" ref="codis"/>
 	</bean>
 
-	<util:constant static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"/>
-	<context:component-scan base-package="org.springframework.web.filter.DelegatingFilterProxy"></context:component-scan>
+	<!--<context:component-scan base-package="org.springframework.web.filter.DelegatingFilterProxy"></context:component-scan>-->
 </beans>

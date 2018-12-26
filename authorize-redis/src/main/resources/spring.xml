@@ -31,9 +31,11 @@
 	<import resource="classpath*:/spring-mybatis.xml"/>
 	<import resource="classpath*:/spring-cache.xml"/>
 	<import resource="classpath*:/spring-shiro.xml"/>
+
 	<!-- 定时任务，运行去掉
 	<import resource="spring-timer.xml"/>
 	 -->
-	<import resource="classpath*:/spring-cache_permission.xml"/>
-	<import resource="classpath*:/spring-shiro_permission.xml"/>
+	<import resource="classpath*:/framework-sso-client.xml" />
+	<!--<import resource="classpath*:/spring-cache_permission.xml"/>-->
+	<!--<import resource="classpath*:/spring-shiro_permission.xml"/>-->
 </beans>

@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
-@Scope(value="prototype")
-@RequestMapping("permission")
+//@Scope(value="prototype")
+@RequestMapping("/permission")
 public class PermissionController extends BaseController {
 	
 	@Autowired

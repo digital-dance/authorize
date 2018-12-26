@@ -72,11 +72,11 @@
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>authorize.redis</groupId>
-			<artifactId>authorize-redis-client</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>authorize.redis</groupId>-->
+			<!--<artifactId>authorize-redis-client</artifactId>-->
+			<!--<version>0.0.2-SNAPSHOT</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

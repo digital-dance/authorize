@@ -196,7 +196,7 @@ public class PermissionFilter implements Filter {
 		}
 		boolean retValue = false;
 		for (ResourceBo resourceBo : resourceBos) {
-			if ( resourceBo != null ) continue;
+			if ( resourceBo == null ) continue;
 			if ( resourceBo.getUrl() != null && "".equals(resourceBo.getUrl()) ) {
 
 				String resourceHttpMethod = StringTools.isEmpty(resourceBo.getHttpMethod()) ? "" : resourceBo.getHttpMethod().toLowerCase();

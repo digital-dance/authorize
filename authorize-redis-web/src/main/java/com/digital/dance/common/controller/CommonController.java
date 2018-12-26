@@ -34,7 +34,7 @@ import com.digital.dance.common.utils.vcode.SpecCaptcha;
 import com.digital.dance.common.utils.*;
 
 @Controller
-@Scope(value="prototype")
+//@Scope(value="prototype")
 @RequestMapping("open")
 public class CommonController extends BaseController {
 //	@Resource
