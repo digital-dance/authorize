@@ -43,7 +43,12 @@ public class JedisManager {
     public Jedis getJedis() {
         Jedis jedis = null;
         try {
-            jedis = getJedisPool().getResource();
+
+            JedisPool jedisPool = getJedisPool();
+            if( jedisPool != null ){
+                jedis = jedisPool.getResource();
+            }
+
         } catch (JedisConnectionException e) {
         	String message = StringUtils.trim(e.getMessage());
         	if("Could not get a resource from the pool".equalsIgnoreCase(message)){

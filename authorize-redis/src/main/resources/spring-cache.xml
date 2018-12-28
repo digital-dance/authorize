@@ -29,16 +29,16 @@
 		 <!--<property name="maxWaitMillis" value="${redis.cluster.maxWaitMills}"/>-->
     <!--</bean>-->
 	<!-- redis 配置,也可以把配置挪到properties配置文件中,再读取 -->
-	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
-		<constructor-arg index="0" ref="jedisPoolConfig" />
-		<!-- 端口，默认6379 -->
-	    <constructor-arg index="2" value="${spring.redis.port}"  name="port" type="int"/>
-	    <constructor-arg index="3" value="5000"  name="timeout" type="int"/>
-	    <constructor-arg index="1" value="${spring.redis.host}" name="host" type="java.lang.String"/>
-	    <!-- 如果你需要配置密码，请打开这里。
-	        <constructor-arg index="4" value="${spring.redis.password}" name="password" type="java.lang.String"/>
-	    -->
-	</bean>
+	<!--<bean id="jedisPool" class="redis.clients.jedis.JedisPool">-->
+		<!--<constructor-arg index="0" ref="jedisPoolConfig" />-->
+		<!--&lt;!&ndash; 端口，默认6379 &ndash;&gt;-->
+	    <!--<constructor-arg index="2" value="${spring.redis.port}"  name="port" type="int"/>-->
+	    <!--<constructor-arg index="3" value="5000"  name="timeout" type="int"/>-->
+	    <!--<constructor-arg index="1" value="${spring.redis.host}" name="host" type="java.lang.String"/>-->
+	    <!--&lt;!&ndash; 如果你需要配置密码，请打开这里。-->
+	        <!--<constructor-arg index="4" value="${spring.redis.password}" name="password" type="java.lang.String"/>-->
+	    <!--&ndash;&gt;-->
+	<!--</bean>-->
 	<!-- 
 		这种 arguments 构造的方式，之前配置有缺点。
 		这里之前的配置有问题，因为参数类型不一致，有时候jar和环境的问题，导致参数根据index对应，会处理问题，
@@ -128,8 +128,8 @@
 
 	<bean id="redisFactory" class="com.digital.dance.framework.codis.client.RedisFactory">
 		<property name="config" ref="jedisPoolConfig"/>
-		<property name="proxyHost" value="${redis.host}"/>
-		<property name="port" value="${redis.port}"/>
+		<!--<property name="proxyHost" value="${redis.host}"/>-->
+		<!--<property name="port" value="${redis.port}"/>-->
 		<property name="subSysName" value="${codis.subSysName}"/>
 		<property name="authpassword" value="${codis.authpassword}"/>
 		<property name="timeout" value="${redis.cache.timeout}"/>
@@ -146,7 +146,7 @@
 	</bean>
 
 	<bean id="jedisManager" class="com.digital.dance.core.shiro.cache.JedisManager">
-		<property name="jedisPool" ref="jedisPool"/>
+		<!--<property name="jedisPool" ref="jedisPool"/>-->
 		<property name="expireTime" value="1200"/>
 		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
 		<property name="nodes" value="${redis.nodes}"/>
