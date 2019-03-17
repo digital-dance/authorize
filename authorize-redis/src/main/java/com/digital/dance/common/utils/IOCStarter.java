@@ -14,7 +14,7 @@ public class IOCStarter {
                     LoggerUtils.debug( IOCStarter.class,
 					"-----------begin to load " + iOCCfgPath + " -----------");
                     String[] unitTestConfigLocations = new String[iOCCfgPath.length];
-                    	unitTestConfigLocations = iOCCfgPath;
+                    unitTestConfigLocations = iOCCfgPath;
                     iOCStarterContext = new ClassPathXmlApplicationContext(unitTestConfigLocations);
                     iOCStarterContext.start();
                     LoggerUtils.debug( IOCStarter.class,

@@ -140,9 +140,8 @@ public class PermissionFilter implements Filter {
 		if( loginInfo != null ) {
 			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
 			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
-				String key = PrivilegeCacheManager.getUserRolesKey( loginInfo.getUserId() );
-				long len = VCache.getLenByList( key );
-				loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
+				loginUserRoles = PrivilegeCacheManager.getLoginUserRole( loginInfo.getUserId() );
+
 				loginInfo.setUserRoles(loginUserRoles);
 				SSOLoginFilter.setLoginInfo2Session(request, loginInfo);
 			}

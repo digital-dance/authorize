@@ -1,6 +1,7 @@
 package com.digital.dance.client.core.shiro.service.impl;
 
 import com.digital.dance.client.core.shiro.cache.VCache;
+import com.digital.dance.framework.sso.entity.LoginUserRole;
 import com.digital.dance.permission.bo.ResourceBo;
 import com.digital.dance.permission.bo.RoleBranchResourceBo;
 import com.digital.dance.permission.service.PermissionService;
@@ -17,14 +18,63 @@ import java.util.TreeSet;
 import java.util.List;
 import java.util.Set;
 
+//
+
+import com.digital.dance.common.utils.SpringUtils;
+import com.digital.dance.framework.infrastructure.commons.*;
+import com.digital.dance.framework.sso.entity.LoginInfo;
+
+import com.digital.dance.framework.sso.util.LoginContext;
+import com.digital.dance.framework.sso.util.SSOLoginManageHelper;
+
+import com.digital.dance.commons.exception.BizException;
+
+import com.digital.dance.commons.security.utils.RSACoderUtil;
+import com.digital.dance.commons.serialize.json.utils.JSONUtils;
+
+import java.util.*;
+
+import com.digital.dance.common.utils.BeanCopyUtil;
+//
 public class PrivilegeCacheManager {
+    static Log log = new Log(PrivilegeCacheManager.class);
 
 
     public static List<ResourceBo> listRoleBranchResourceByKey( String roleId, String orgId, String departmentId ){
+
+//        SSOLoginManageHelper ssologinManageHelper = SpringUtils.getBean("ssologinManageHelper");
+
         departmentId = departmentId == null ? "" : departmentId;
         String key = getRoleBranchResourceKey( roleId, orgId, departmentId );
         long len = VCache.getLenByList(key);
         List<ResourceBo> lRB = VCache.getVByList(key, 0, (int)len, ResourceBo.class);
+
+        try {
+            SSOLoginManageHelper ssologinManageHelper = SpringUtils.getBean("ssologinManageHelper");
+            ResponseVo responseVo = new ResponseVo();
+            if( lRB == null || lRB.size() < 1 ){
+
+                Map<String, String> pMap = new HashMap<String, String>();
+                pMap.put("roleId", roleId);
+                pMap.put("orgId", orgId);
+                pMap.put("departmentId", departmentId);
+                String responseVoStr = HttpClientUtil.executeGetReq(
+                        ssologinManageHelper.getPrivilegeCacheServiceUrl()+"/permission/resource"
+                        , new HashMap<String, String>(), pMap);
+                responseVo = (ResponseVo) JSONUtils.toObject(responseVoStr, ResponseVo.class);
+                lRB = new ArrayList<ResourceBo>();
+                List lRBObjs = (List)responseVo.getResult();
+                for (Object obj : lRBObjs){
+                    ResourceBo resourceBo = new ResourceBo();
+                    BeanCopyUtil.copy(obj, resourceBo);
+                    lRB.add(resourceBo);
+                }
+            }
+
+        } catch (Exception ex){
+            log.error("sso client error.", ex);
+            throw new BizException("decode token error.");
+        }
         return lRB;
     }
 
@@ -92,6 +142,32 @@ public class PrivilegeCacheManager {
         String key = getUserPrivilegeResourceKey( userId );
         long len = VCache.getLenByList(key);
         List<ResourceBo> lRB = VCache.getVByList(key, 0, (int)len, ResourceBo.class);
+
+        try {
+            SSOLoginManageHelper ssologinManageHelper = SpringUtils.getBean("ssologinManageHelper");
+            ResponseVo responseVo = new ResponseVo();
+            if( lRB == null || lRB.size() < 1 ){
+
+                Map<String, String> pMap = new HashMap<String, String>();
+                pMap.put("userId", userId);
+
+                String responseVoStr = HttpClientUtil.executeGetReq(
+                        ssologinManageHelper.getPrivilegeCacheServiceUrl()+"/permission/resource/user"
+                        , new HashMap<String, String>(), pMap);
+                responseVo = (ResponseVo) JSONUtils.toObject(responseVoStr, ResponseVo.class);
+                lRB = new ArrayList<ResourceBo>();
+                List lRBObjs = (List)responseVo.getResult();
+                for (Object obj : lRBObjs){
+                    ResourceBo resourceBo = new ResourceBo();
+                    BeanCopyUtil.copy(obj, resourceBo);
+                    lRB.add(resourceBo);
+                }
+            }
+
+        } catch (Exception ex){
+            log.error("sso client error.", ex);
+            throw new BizException("decode token error.");
+        }
         return lRB;
     }
 
@@ -211,5 +287,38 @@ public class PrivilegeCacheManager {
 
     public static String getUserRolesKeyPrefix( ){
         return "_UserRoles_";
+    }
+
+    public static List<LoginUserRole> getLoginUserRole( String userId ){
+        String key = PrivilegeCacheManager.getUserRolesKey( userId );
+        long len = VCache.getLenByList( key );
+        List<LoginUserRole> loginUserRoles = VCache.getVByList(key, 0, (int)len, LoginUserRole.class);
+
+        try {
+            SSOLoginManageHelper ssologinManageHelper = SpringUtils.getBean("ssologinManageHelper");
+            ResponseVo responseVo = new ResponseVo();
+            if( loginUserRoles == null || loginUserRoles.size() < 1 ){
+
+                Map<String, String> pMap = new HashMap<String, String>();
+                pMap.put("userId", userId);
+
+                String responseVoStr = HttpClientUtil.executeGetReq(
+                        ssologinManageHelper.getLoginServiceUrl()+"/login/loginUserRole"
+                        , new HashMap<String, String>(), pMap);
+                responseVo = (ResponseVo) JSONUtils.toObject(responseVoStr, ResponseVo.class);
+                loginUserRoles = new ArrayList<LoginUserRole>();
+                List lRBObjs = (List)responseVo.getResult();
+                for (Object obj : lRBObjs){
+                    LoginUserRole loginUserRole = new LoginUserRole();
+                    BeanCopyUtil.copy(obj, loginUserRole);
+                    loginUserRoles.add(loginUserRole);
+                }
+            }
+
+        } catch (Exception ex){
+            log.error("sso client error.", ex);
+            throw new BizException("decode token error.");
+        }
+        return loginUserRoles;
     }
 }
