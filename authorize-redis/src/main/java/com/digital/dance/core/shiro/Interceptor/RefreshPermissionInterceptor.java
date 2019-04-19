@@ -2,7 +2,6 @@ package com.digital.dance.core.shiro.Interceptor;
 
 import com.digital.dance.permission.service.PermissionService;
 import com.digital.dance.core.shiro.service.impl.CacheInitializer;
-import com.digital.dance.permission.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +43,7 @@ public class RefreshPermissionInterceptor extends HandlerInterceptorAdapter {
                 //否则用MatchPath去模式匹配uri
                 Matcher m = pattern.matcher(basePath);
                 if (m.find()) {
-                    CacheInitializer.reflushRoleBranchResourceCashe(permissionService);
+                    CacheInitializer.reflushRoleBranchResourceCache(permissionService);
                 }
 
             }

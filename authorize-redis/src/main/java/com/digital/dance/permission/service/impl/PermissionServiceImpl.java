@@ -1,13 +1,12 @@
 package com.digital.dance.permission.service.impl;
 
 import com.digital.dance.common.dao.PermissionMapper;
-import com.digital.dance.common.dao.PermissionMapper;
+
 import com.digital.dance.common.dao.UserPrivilegeMapper;
 import com.digital.dance.common.model.*;
 import com.digital.dance.permission.bo.*;
 import com.digital.dance.common.utils.BeanCopyUtil;
 import com.digital.dance.permission.service.PermissionService;
-import com.digital.dance.core.shiro.service.impl.CacheInitializer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

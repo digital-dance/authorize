@@ -8,21 +8,14 @@ import com.digital.dance.permission.bo.RoleBranchResourceBo;
 import com.digital.dance.permission.service.PermissionService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
-
-import com.digital.dance.common.utils.LoggerUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.digital.dance.core.shiro.cache.*;
 import com.digital.dance.permission.bo.*;
-import com.digital.dance.common.utils.BeanCopyUtil;
-import com.digital.dance.permission.service.PermissionService;
 
 
 import java.util.ArrayList;
-import java.util.TreeSet;
 import java.util.List;
-import java.util.Set;
 
 public class CacheInitializer implements
         ApplicationListener<ContextRefreshedEvent> {
@@ -38,16 +31,16 @@ public class CacheInitializer implements
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null) {//root application context 没有parent.
-            reflushRoleBranchResourceCashe( permissionService );
+            reflushRoleBranchResourceCache( permissionService );
 //          reflushUserRoleCashe(userRoleService);
-            reflushUserPrivilegeResourceCashe( permissionService );
+            reflushUserPrivilegeResourceCache( permissionService );
 
             System.out.println("=========================spring容器初始化完毕, reflushRoleBranchResourceCache执行完毕=========================");
 
         }
     }
 
-    public static void reflushUserPrivilegeResourceCashe(PermissionService permissionService) {
+    public static void reflushUserPrivilegeResourceCache(PermissionService permissionService) {
 
         List<UserPrivilegeBo> retBos = permissionService.selectUserPrivilege( new UserPrivilegeBo() );
 
@@ -62,10 +55,10 @@ public class CacheInitializer implements
             VCache.setVByList(key, rb);
         }
 
-        LoggerUtils.info(VCache.class,"reflushRoleBranchResourceCache执行完毕" );
+        LoggerUtils.info(VCache.class,"reflushUserPrivilegeResourceCache执行完毕" );
     }
 
-    public static void reflushRoleBranchResourceCashe(PermissionService permissionService) {
+    public static void reflushRoleBranchResourceCache(PermissionService permissionService) {
 
         List<RoleBranchResourceBo> retBos = permissionService.listRoleBranchResource();
 

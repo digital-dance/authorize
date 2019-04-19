@@ -351,5 +351,11 @@
 			<version>3.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.digital.dance.framework</groupId>
+			<artifactId>framework.sso</artifactId>
+			<!--<classifier>pg</classifier>-->
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -1,6 +1,7 @@
 package com.digital.dance.core.shiro.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.digital.dance.common.utils.Constants;
+import com.digital.dance.common.utils.GsonUtils;
 import com.digital.dance.common.utils.ResponseVo;
 import com.digital.dance.core.shiro.cache.VCache;
 import com.digital.dance.commons.security.utils.RSACoderUtil;
@@ -23,12 +25,13 @@ import com.digital.dance.framework.sso.filter.SSOLoginFilter;
 import com.digital.dance.framework.sso.util.LoginContext;
 import com.digital.dance.framework.sso.util.SSOLoginManageHelper;
 import com.digital.dance.permission.bo.ResourceBo;
+import com.digital.dance.service.Permission;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 
-public class PermissionFilter implements Filter {
+public class PermissionFilter implements Filter, Permission {
 	Log log = new Log(PermissionFilter.class);
 	FilterConfig permissionFilterConfig = null;
 
@@ -76,10 +79,10 @@ public class PermissionFilter implements Filter {
 
 	}
 
-	private String[] prepareAllowSuffixs(String allowSuffixs) {
+	public String[] prepareAllowSuffixs(String allowSuffixs) {
 		return (StringUtils.isNotBlank(allowSuffixs)) ? (("(\\."+allowSuffixs +")$").replace(";", ")$;(\\.")).split(";") : new String[0];
 	}
-	private boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+	public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException{
 		boolean flag = false;
 		String requestPath = request.getRequestURL().toString().toLowerCase();
@@ -171,10 +174,12 @@ public class PermissionFilter implements Filter {
 		}
 
 	}
-	protected boolean isAccessAllowedBasedRole(String requestPath, String requestHttpMethod, LoginInfo loginInfo) {
+	public boolean isAccessAllowedBasedRole(String requestPath, String requestHttpMethod, LoginInfo loginInfo) {
 		boolean retValue = false;
 		if( loginInfo != null ) {
 			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
+
+			if( loginUserRoles == null || loginUserRoles.size() < 1 )return false;
 			for (LoginUserRole loginUserRole : loginUserRoles) {
 				List<ResourceBo> resourceBos = CacheInitializer.listRoleBranchResourceByKey(loginUserRole.getRoleId()
 						, loginUserRole.getOrgId(), loginUserRole.getDepartmentId());
@@ -185,9 +190,14 @@ public class PermissionFilter implements Filter {
 		return false;
 	}
 
-	protected boolean isAccessAllowedBasedUser(String requestPath, String requestHttpMethod, LoginInfo loginInfo) {
+	public boolean isAccessAllowedBasedUser(String requestPath, String requestHttpMethod, LoginInfo loginInfo) {
 		List<ResourceBo> resourceBos = CacheInitializer.listUserPrivilegeResourceByKey(loginInfo.getUserId());
 
+		return isPermission( requestPath, requestHttpMethod, resourceBos );
+	}
+
+	public boolean isPermission(String requestPath, String requestHttpMethod, String resourceBosJsonObj) {
+		ArrayList<ResourceBo> resourceBos = GsonUtils.toObject(resourceBosJsonObj, new ArrayList<ResourceBo>().getClass());
 		return isPermission( requestPath, requestHttpMethod, resourceBos );
 	}
 
@@ -232,5 +242,21 @@ public class PermissionFilter implements Filter {
 	@Override
 	public void destroy() {
 		permissionFilterConfig = null;
+	}
+
+	public static void main(String[] args){
+		ArrayList<ResourceBo> resourceBos = new ArrayList<ResourceBo>();
+		ResourceBo bo = new ResourceBo();
+		bo.setPageSize(1);
+		bo.setPageIndex(2);
+		bo.setUrl("gh");
+		resourceBos.add(bo);
+
+		String resourceBosJsonObj = GsonUtils.toJsonStr(resourceBos);
+		ArrayList<ResourceBo> resourceBos1 = GsonUtils.toObject(resourceBosJsonObj, new ArrayList<ResourceBo>().getClass());
+
+		ArrayList<ResourceBo> resourceBos2 = GsonUtils.toObject("[{\"offsetNum\":2,\"pageIndex\":2,\"pageSize\":1,\"url\":\"gh\"}]", new ArrayList<ResourceBo>().getClass());
+
+		resourceBosJsonObj = GsonUtils.toJsonStr(resourceBos2);
 	}
 }
