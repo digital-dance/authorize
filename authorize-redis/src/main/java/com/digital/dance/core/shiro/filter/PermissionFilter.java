@@ -82,7 +82,7 @@ public class PermissionFilter implements Filter, Permission {
 	public String[] prepareAllowSuffixs(String allowSuffixs) {
 		return (StringUtils.isNotBlank(allowSuffixs)) ? (("(\\."+allowSuffixs +")$").replace(";", ")$;(\\.")).split(";") : new String[0];
 	}
-	public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+	public boolean isPassedRequest( String[] passedPaths, HttpServletRequest request, HttpServletResponse response )
 			throws IOException, ServletException{
 		boolean flag = false;
 		String requestPath = request.getRequestURL().toString().toLowerCase();
@@ -115,9 +115,9 @@ public class PermissionFilter implements Filter, Permission {
 		String casLoginurl = this.ssologinManageHelper.getCasLoginurl();
 
 		//通过无需权限限制的资源
-		boolean passedFlag = isPassedRequest( passedPaths, request, response, chain )
-				|| isPassedRequest( allowSuffix, request, response, chain )
-				|| isPassedRequest( bizloginUrl, request, response, chain );
+		boolean passedFlag = isPassedRequest( passedPaths, request, response )
+				|| isPassedRequest( allowSuffix, request, response )
+				|| isPassedRequest( bizloginUrl, request, response );
 		if( passedFlag ){
 			chain.doFilter(request, response);
 			return;
@@ -136,7 +136,7 @@ public class PermissionFilter implements Filter, Permission {
 		boolean retValue = false;
 
 		//通过只读页
-		passedFlag = isPassedRequest( readonlyUrls, request, response, chain );
+		passedFlag = isPassedRequest( readonlyUrls, request, response );
 		if( loginInfo != null && passedFlag ){
 
 			chain.doFilter(request, response);

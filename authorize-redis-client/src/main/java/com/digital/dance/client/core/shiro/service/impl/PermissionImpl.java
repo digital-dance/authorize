@@ -34,7 +34,7 @@ public class PermissionImpl implements Permission {
         return (StringUtils.isNotBlank(allowSuffixs)) ? (("(\\."+allowSuffixs +")$").replace(";", ")$;(\\.")).split(";") : new String[0];
     }
 
-    public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         boolean flag = false;
         String requestPath = request.getRequestURL().toString().toLowerCase();

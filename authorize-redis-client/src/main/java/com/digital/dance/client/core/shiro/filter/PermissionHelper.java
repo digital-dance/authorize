@@ -1,33 +1,34 @@
 package com.digital.dance.client.core.shiro.filter;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.digital.dance.client.core.shiro.cache.VCache;
 import com.digital.dance.client.core.shiro.service.impl.PermissionImpl;
-import com.digital.dance.common.utils.*;
 import com.digital.dance.client.core.shiro.service.impl.PrivilegeCacheManager;
+import com.digital.dance.common.utils.Constants;
+import com.digital.dance.common.utils.GsonUtils;
+import com.digital.dance.common.utils.ResponseVo;
 import com.digital.dance.framework.infrastructure.commons.Log;
-import com.digital.dance.framework.infrastructure.commons.StringTools;
 import com.digital.dance.framework.sso.entity.LoginInfo;
 import com.digital.dance.framework.sso.entity.LoginUserRole;
 import com.digital.dance.framework.sso.filter.SSOLoginFilter;
 import com.digital.dance.framework.sso.util.SSOLoginManageHelper;
 import com.digital.dance.permission.bo.ResourceBo;
 import com.digital.dance.service.Permission;
+
+import com.digital.dance.common.utils.SpringUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public class PermissionFilter implements Filter {
-	Log log = new Log(PermissionFilter.class);
+
+public class PermissionHelper {
+	Log log = new Log(PermissionHelper.class);
 
 	private FilterConfig permissionFilterConfig = null;
 
@@ -37,6 +38,7 @@ public class PermissionFilter implements Filter {
 
 	private String[] passedPaths = null;
 	private String[] allowSuffix = null;
+
 	private String[] bizloginUrl = null;
 	private String[] readonlyUrls = null;
 	private String currentWebSiteName = null;
@@ -52,36 +54,75 @@ public class PermissionFilter implements Filter {
 
 	public static final String CAS_COOKIE_NAME = "cas";
 
-	public void init(FilterConfig filterConfig) throws ServletException {
-		WebApplicationContext applicationcontext = WebApplicationContextUtils
-				.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		this.ssologinManageHelper = ((SSOLoginManageHelper) applicationcontext.getBean("ssologinManageHelper",
-				SSOLoginManageHelper.class));
+	public void init(FilterConfig filterConfig) {
 
-		homePageUrl = filterConfig.getInitParameter(init_param_homePageUrl);
-		currentWebSiteName = ssologinManageHelper.getWebSiteCode();
+//		this.ssologinManageHelper = ((SSOLoginManageHelper) SpringUtils.getBean("ssologinManageHelper"));
+		this.setSsologinManageHelper(((SSOLoginManageHelper) SpringUtils.getBean("ssologinManageHelper")));
 
-		casWebSiteName = filterConfig.getInitParameter(init_param_cas_web_site_name);
+		//homePageUrl = filterConfig.getInitParameter(init_param_homePageUrl);
+		this.setHomePageUrl(filterConfig.getInitParameter(init_param_homePageUrl));
+
+//		currentWebSiteName = ssologinManageHelper.getWebSiteCode();
+		this.setCurrentWebSiteName(ssologinManageHelper.getWebSiteCode());
+
+//		casWebSiteName = filterConfig.getInitParameter(init_param_cas_web_site_name);
+		this.setCasWebSiteName(filterConfig.getInitParameter(init_param_cas_web_site_name));
 
 		String allowUrls = filterConfig.getInitParameter(init_param_allowUrl);
-		passedPaths = (StringUtils.isNotBlank(allowUrls)) ? allowUrls.split(";") : new String[0];
+//		passedPaths = (StringUtils.isNotBlank(allowUrls)) ? allowUrls.split(";") : new String[0];
+		this.setPassedPaths((StringUtils.isNotBlank(allowUrls)) ? allowUrls.split(";") : new String[0]);
 
 		String allowSuffixs = filterConfig.getInitParameter(init_param_allowSuffix);
-		allowSuffix = prepareAllowSuffixs( allowSuffixs );
+//		allowSuffix = prepareAllowSuffixs( allowSuffixs );
+		this.setAllowSuffix(prepareAllowSuffixs(allowSuffixs));
 
 		String bizloginUrls = filterConfig.getInitParameter(init_param_bizloginUrl);
-		bizloginUrl = (StringUtils.isNotBlank(bizloginUrls)) ? bizloginUrls.split(";") : new String[0];
+//		bizloginUrl = (StringUtils.isNotBlank(bizloginUrls)) ? bizloginUrls.split(";") : new String[0];
+		this.setBizloginUrl((StringUtils.isNotBlank(bizloginUrls)) ? bizloginUrls.split(";") : new String[0]);
 
 		String readonlyUrl = filterConfig.getInitParameter(init_param_readonlyUrl);
-		readonlyUrls = (StringUtils.isNotBlank(readonlyUrl)) ? readonlyUrl.split(";") : new String[0];
-		permissionFilterConfig = filterConfig;
-	}
+//		readonlyUrls = (StringUtils.isNotBlank(readonlyUrl)) ? readonlyUrl.split(";") : new String[0];
+		this.setReadonlyUrls((StringUtils.isNotBlank(readonlyUrl)) ? readonlyUrl.split(";") : new String[0]);
 
+		permissionFilterConfig = filterConfig;
+
+	}
+    public void init(Map<Object, Object> properties) {
+
+//		this.ssologinManageHelper = ((SSOLoginManageHelper) SpringUtils.getBean("ssologinManageHelper"));
+        this.setSsologinManageHelper(((SSOLoginManageHelper) SpringUtils.getBean("ssologinManageHelper")));
+
+        //homePageUrl = filterConfig.getInitParameter(init_param_homePageUrl);
+        this.setHomePageUrl((String) properties.get(init_param_homePageUrl));
+
+//		currentWebSiteName = ssologinManageHelper.getWebSiteCode();
+        this.setCurrentWebSiteName(ssologinManageHelper.getWebSiteCode());
+
+//		casWebSiteName = filterConfig.getInitParameter(init_param_cas_web_site_name);
+        this.setCasWebSiteName((String) properties.get(init_param_cas_web_site_name));
+
+        String allowUrls = (String) properties.get(init_param_allowUrl);
+//		passedPaths = (StringUtils.isNotBlank(allowUrls)) ? allowUrls.split(";") : new String[0];
+        this.setPassedPaths((StringUtils.isNotBlank(allowUrls)) ? allowUrls.split(";") : new String[0]);
+
+        String allowSuffixs = (String) properties.get(init_param_allowSuffix);
+//		allowSuffix = prepareAllowSuffixs( allowSuffixs );
+        this.setAllowSuffix(prepareAllowSuffixs(allowSuffixs));
+
+        String bizloginUrls = (String) properties.get(init_param_bizloginUrl);
+//		bizloginUrl = (StringUtils.isNotBlank(bizloginUrls)) ? bizloginUrls.split(";") : new String[0];
+        this.setBizloginUrl((StringUtils.isNotBlank(bizloginUrls)) ? bizloginUrls.split(";") : new String[0]);
+
+        String readonlyUrl = (String) properties.get(init_param_readonlyUrl);
+//		readonlyUrls = (StringUtils.isNotBlank(readonlyUrl)) ? readonlyUrl.split(";") : new String[0];
+        this.setReadonlyUrls((StringUtils.isNotBlank(readonlyUrl)) ? readonlyUrl.split(";") : new String[0]);
+
+    }
 	private String[] prepareAllowSuffixs(String allowSuffixs) {
 //		return (StringUtils.isNotBlank(allowSuffixs)) ? (("(\\."+allowSuffixs +")$").replace(";", ")$;(\\.")).split(";") : new String[0];
 		return getPermission().prepareAllowSuffixs( allowSuffixs );
 	}
-	private boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+	private boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException{
 //		boolean flag = false;
 //		String requestPath = request.getRequestURL().toString().toLowerCase();
@@ -105,7 +146,7 @@ public class PermissionFilter implements Filter {
 		return getPermission().isPassedRequest( passedPaths, request, response );
 	}
 
-	public void doFilter(ServletRequest req, ServletResponse rep, FilterChain chain)
+	public Boolean isAllowed(ServletRequest req, ServletResponse rep)
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 
@@ -115,19 +156,19 @@ public class PermissionFilter implements Filter {
 		String casLoginurl = this.ssologinManageHelper.getCasLoginurl();
 
 		//通过无需权限限制的资源
-		boolean passedFlag = isPassedRequest( passedPaths, request, response, chain )
-				|| isPassedRequest( allowSuffix, request, response, chain )
-				|| isPassedRequest( bizloginUrl, request, response, chain );
+		boolean passedFlag = isPassedRequest( passedPaths, request, response )
+				|| isPassedRequest( allowSuffix, request, response )
+				|| isPassedRequest( bizloginUrl, request, response );
 		if( passedFlag ){
-			chain.doFilter(request, response);
-			return;
+			//chain.doFilter(request, response);
+			return true;
 		}
 
 		if (requestPath.toLowerCase().indexOf(casLoginurl.split("\\?")[0].toLowerCase()) > -1){
 			log.info(
 					"sso client request path '" + requestPath + "'is in login page, filter chain will be continued.");
-			chain.doFilter(request, response);
-			return;
+//			chain.doFilter(request, response);
+			return true;
 		}
 
 		LoginInfo loginInfo = SSOLoginFilter.getLoginInfoFromSession(request);
@@ -136,11 +177,11 @@ public class PermissionFilter implements Filter {
 		boolean retValue = false;
 
 		//通过只读页
-		passedFlag = isPassedRequest( readonlyUrls, request, response, chain );
+		passedFlag = isPassedRequest( readonlyUrls, request, response );
 		if( loginInfo != null && passedFlag ){
 
-			chain.doFilter(request, response);
-			return;
+//			chain.doFilter(request, response);
+			return true;
 
 		}
 
@@ -159,18 +200,19 @@ public class PermissionFilter implements Filter {
 		if( loginInfo != null && loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedRole( requestPath, requestHttpMethod, loginInfo) ){
 
-			chain.doFilter(request, response);
-			return;
+//			chain.doFilter(request, response);
+			return true;
 		} else if( loginInfo != null && !loginInfo.getRolePrivilegeInd()
 				&& isAccessAllowedBasedUser( requestPath, requestHttpMethod, loginInfo) ){
 			//通过基于用户的访问权限
-			chain.doFilter(request, response);
-			return;
+//			chain.doFilter(request, response);
+			return true;
 		} else {
 			ResponseVo responseVo = new ResponseVo();
 			responseVo.setCode(Constants.ReturnCode.NOPRIVILEGE.Code());
 			responseVo.setMsg("无访问权限:" + requestPath + ":" + requestHttpMethod);
 			ShiroFilterUtils.responseOutput(response, responseVo);
+			return false;
 		}
 
 	}
@@ -238,7 +280,7 @@ public class PermissionFilter implements Filter {
 		return getPermission().isPermission( requestPath, requestHttpMethod, resourceBosJsonObj);
 	}
 
-	@Override
+//	@Override
 	public void destroy() {
 		permissionFilterConfig = null;
 	}
@@ -251,4 +293,68 @@ public class PermissionFilter implements Filter {
 		this.permission = permission;
 	}
 
+
+	public SSOLoginManageHelper getSsologinManageHelper() {
+		return ssologinManageHelper;
+	}
+
+	public void setSsologinManageHelper(SSOLoginManageHelper ssologinManageHelper) {
+		this.ssologinManageHelper = ssologinManageHelper;
+	}
+
+	public String[] getPassedPaths() {
+		return passedPaths;
+	}
+
+	public void setPassedPaths(String[] passedPaths) {
+		this.passedPaths = passedPaths;
+	}
+
+	public String[] getAllowSuffix() {
+		return allowSuffix;
+	}
+
+	public void setAllowSuffix(String[] allowSuffix) {
+		this.allowSuffix = allowSuffix;
+	}
+
+	public String[] getBizloginUrl() {
+		return bizloginUrl;
+	}
+
+	public void setBizloginUrl(String[] bizloginUrl) {
+		this.bizloginUrl = bizloginUrl;
+	}
+
+	public String[] getReadonlyUrls() {
+		return readonlyUrls;
+	}
+
+	public void setReadonlyUrls(String[] readonlyUrls) {
+		this.readonlyUrls = readonlyUrls;
+	}
+
+	public String getCurrentWebSiteName() {
+		return currentWebSiteName;
+	}
+
+	public void setCurrentWebSiteName(String currentWebSiteName) {
+		this.currentWebSiteName = currentWebSiteName;
+	}
+
+	public String getCasWebSiteName() {
+		return casWebSiteName;
+	}
+
+	public void setCasWebSiteName(String casWebSiteName) {
+		this.casWebSiteName = casWebSiteName;
+	}
+
+	public String getHomePageUrl() {
+		return homePageUrl;
+	}
+
+	public void setHomePageUrl(String homePageUrl) {
+		this.homePageUrl = homePageUrl;
+	}
 }

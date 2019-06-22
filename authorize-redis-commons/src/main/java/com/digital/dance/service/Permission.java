@@ -12,7 +12,7 @@ public interface Permission {
 
     public String[] prepareAllowSuffixs(String allowSuffixs);
 
-    public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException;
 
     public boolean isAccessAllowedBasedRole(String requestPath, String requestHttpMethod, LoginInfo loginInfo);
