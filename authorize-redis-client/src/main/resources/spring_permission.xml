@@ -22,6 +22,7 @@
 			<list>
 
 				<value>classpath:config_permission.properties</value>
+				<value>classpath:sso.properties</value>
 
 			</list>
 		</property>
@@ -29,6 +30,7 @@
 
 	<import resource="classpath*:/spring-cache_permission.xml"/>
 	<import resource="classpath*:/spring-shiro_permission.xml"/>
+	<import resource="classpath*:/framework-sso-client.xml" />
 	<!-- 定时任务，运行去掉
 	<import resource="spring-timer.xml"/>
 	 -->

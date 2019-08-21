@@ -16,6 +16,8 @@ import com.digital.dance.service.Permission;
 import com.digital.dance.common.utils.SpringUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +26,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
+@Component
 public class PermissionHelper {
 	Log log = new Log(PermissionHelper.class);
 
 	private FilterConfig permissionFilterConfig = null;
 
+	@Autowired
 	private Permission permission;
 
 	private SSOLoginManageHelper ssologinManageHelper;
