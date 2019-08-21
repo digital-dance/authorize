@@ -22,7 +22,7 @@
   	<module>authorize-redis-web</module>
 	<module>authorize-redis-war</module>
     <module>authorize-redis-client</module>
-	<module>authorize-redis-without-spring</module>
+	<module>redis-without-spring</module>
 </modules>
 
 	<!--<distributionManagement>-->
