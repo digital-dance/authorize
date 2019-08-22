@@ -15,6 +15,12 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+
+		<dockerfile.skip>false</dockerfile.skip>
+
 	</properties>
 
 	<build>
@@ -42,6 +48,45 @@
 					<port>8080</port>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.9</version>
+				<!-- 运行mvn 打包命令时会自动打包镜像并推送  -->
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<!-- 推送 -->
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skip>${dockerfile.skip}</skip>
+
+					<!--&lt;!&ndash; 测试推送到docker hub的仓库 &ndash;&gt;-->
+					<repository>www.digital.dance.com:5001/repository/digital.dance.docker/authorize</repository>
+					<useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+
+					<buildDirectory>${project.basedir}/target/</buildDirectory>
+
+					<!--//上下文路径配置，此处设置为项目根路径-->
+					<contextDirectory>${project.basedir}</contextDirectory>
+					<tag>v1</tag>
+					<!--&lt;!&ndash; 这个是你要在dockerfile里使用的maven变量，在此处配置后可在dockerfile里使用该 变量 &ndash;&gt;-->
+					<buildArgs>
+						<BUILD_WORKDIR>${project.basedir}/</BUILD_WORKDIR>
+						<WAR_FILE>target/authorize-redis-war-0.0.2-SNAPSHOT.war</WAR_FILE>
+						<!--<SH_WORKDIR>${project.basedir}</SH_WORKDIR>-->
+						<SH_FILE>authorize-start.sh</SH_FILE>
+						<SERVER_PORT>8670</SERVER_PORT>
+					</buildArgs>
+				</configuration>
+			</plugin>
+
+
 		</plugins>
 		<resources>
 			<resource>
