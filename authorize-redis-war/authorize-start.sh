@@ -49,4 +49,6 @@ source /etc/profile
 echo 'JAVA_HOME='
 echo $JAVA_HOME
 
+java -version
+
 #/tomcat/8/bin/catalina.sh start
