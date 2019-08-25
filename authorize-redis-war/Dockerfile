@@ -18,7 +18,7 @@ RUN echo ${BUILD_WORKDIR}
 
 WORKDIR ${BUILD_WORKDIR}
 
-COPY docker-source/8/* /tomcat/8/
+COPY docker-source/8 /tomcat/8
 
 COPY ${WAR_FILE} /tomcat/8/webapps/authorize.war
 
