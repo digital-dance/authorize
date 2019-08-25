@@ -9,7 +9,7 @@ echo 'ls -l /tomcat/8/conf'
 ls -l /tomcat/8/conf
 echo 'ls -l /tomcat/8/webapps'
 ls -l /tomcat/8/webapps
-echo 'ls -l /tomcat/8/webapps/ROOT'
+echo 'ls -l /tomcat/8/bin'
 ls -l /tomcat/8/webapps/ROOT
 
 chmod -R 777 /tomcat/8/webapps
@@ -51,4 +51,4 @@ echo $JAVA_HOME
 
 #java -version
 
-/tomcat/8/bin/catalina.sh start
+bash $TOMCAT_HOME/bin/startup.sh
