@@ -27,7 +27,7 @@ echo 'chmod -R 777 /app/logs/authorize/logs'
 
 which java
 
-ls -lrt  /etc/alternatives/java
+ls -lrt  /usr/bin/java
 #echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
 #echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
 #
