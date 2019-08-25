@@ -81,7 +81,7 @@
 						<WAR_FILE>target/authorize-redis-war-0.0.2-SNAPSHOT.war</WAR_FILE>
 						<!--<SH_WORKDIR>${project.basedir}</SH_WORKDIR>-->
 						<SH_FILE>authorize-start.sh</SH_FILE>
-						<SERVER_PORT>8670</SERVER_PORT>
+						<SERVER_PORT>8080</SERVER_PORT>
 					</buildArgs>
 				</configuration>
 			</plugin>

@@ -1,0 +1,16 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: task-pv-volume1
+  namespace: docker-pv
+  labels:
+    type: local
+    pv: task-pv-volume1
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/home/app"

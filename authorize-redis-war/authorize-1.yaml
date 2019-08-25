@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: authorize-1
+  namespace: docker-pv
+spec:
+  replicas: 1
+  template:
+    metadata:
+      namespace: docker-pv
+      labels:
+        run: authorize-1
+    spec:
+      volumes:
+        - name: task-pv-storage
+          persistentVolumeClaim:
+            claimName: task-pv-claim1
+      imagePullSecrets:
+          - name: digital-dance-com
+      containers:
+        - name: authorize-1
+          image: www.digital.dance.com:5001/repository/digital.dance.docker/authorize:v1
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8670
+#              hostIP: 0.0.0.0
+#              hostPort: 8761
+#              protocol: TCP
+#            - name: https
+#              containerPort: 443
+#              hostIP: 0.0.0.0
+#              hostPort: 443
+#              protocol: TCP
+          volumeMounts:
+            - mountPath: "/app"
+              name: task-pv-storage
+#    externalIPs:
+#      - 192.168.99.102
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorize-1
+  namespace: docker-pv
+  labels:
+    run: authorize-1
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8670
+      targetPort: 8670
+      nodePort: 31670
+#    - name: https
+#      port: 443
+#      targetPort: 443
+#      nodePort: 30023
+  selector:
+    run: authorize-1

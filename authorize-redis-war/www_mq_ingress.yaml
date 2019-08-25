@@ -1,0 +1,74 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: www-mq-ingress
+  namespace: docker-pv
+  annotations:
+    kubernets.io/ingress.class: "nginx"
+
+#    ingress.kubernetes.io/ssl-passthrough: "true"
+#    ingress.kubernetes.io/ssl-redirect: "True"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      proxy_set_header Host $host:$server_port;
+      proxy_set_header Authorization $http_authorization;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Cookie $http_cookie;
+      client_header_buffer_size 2046k;
+spec:
+#  tls:
+#    - hosts:
+#      - www.mq.ingress
+#      secretName: mq-ingress-certs
+  rules:
+    - host: www.mq.ingress
+      http:
+        paths:
+
+          - path: /eureka
+            backend:
+              serviceName: mq-common-eureka
+              servicePort: 8761
+
+          - path: /eureka-server
+            backend:
+              serviceName: mq-common-eureka
+              servicePort: 8761
+
+          - path: /api
+            backend:
+              serviceName: mq-adapter-boot-zuul
+              servicePort: 8670
+
+          - path: /api
+            backend:
+              serviceName: mq-adapter-boot-zuul-1
+              servicePort: 8670
+
+          - path: /kafka
+            backend:
+              serviceName: mq-adapter-boot-rest-provider
+              servicePort: 2222
+
+          - path: /authorize
+            backend:
+              serviceName: authorize
+              servicePort: 8080
+
+          - path: /authorize
+            backend:
+              serviceName: authorize-1
+              servicePort: 8080
+
+#          - path: /config
+#            backend:
+#              serviceName: config-server
+#              servicePort: 8762
+
+    # - host: www.dashboard.ingress
+    #   https:
+    #     paths:
+    #       - path: /
+    #         backend:
+    #           serviceName: kubernetes-dashboard
+    #           servicePort: 443
