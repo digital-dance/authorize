@@ -51,4 +51,4 @@ echo $JAVA_HOME
 
 #java -version
 
-bash $TOMCAT_HOME/bin/startup.sh
+sh $TOMCAT_HOME/bin/startup.sh
