@@ -2,11 +2,15 @@
 FROM www.digital.dance.com:5001/repository/digital.dance.docker/alpine-oraclejdk8:8
 #VOLUME /app
 RUN mkdir -p /tomcat/8/
+#RUN mkdir -p /tomcat/8/logs/
 
 RUN chmod -R 777 /tomcat
-RUN chmod -R 777 /tomcat/*
+RUN chmod -R 777 /tomcat/8
+RUN chmod -R 777 /tomcat/8/*
+#RUN chmod -R 777 /tomcat/8/logs
 
 RUN mkdir -p /app/logs/authorize
+RUN mkdir -p /app/logs/authorize/logs
 
 ARG BUILD_WORKDIR
 
@@ -30,4 +34,5 @@ EXPOSE ${SERVER_PORT}
 RUN chmod -R 777 /tomcat/*
 RUN chmod -R 777 /tomcat/authorize-start.sh
 RUN chmod -R 777 /app
+RUN chmod -R 777 /app/*
 ENTRYPOINT ["/tomcat/authorize-start.sh"]
