@@ -49,6 +49,6 @@ source /etc/profile
 echo 'JAVA_HOME='
 echo $JAVA_HOME
 
-java -version
+#java -version
 
-#/tomcat/8/bin/catalina.sh start
+/tomcat/8/bin/catalina.sh start
