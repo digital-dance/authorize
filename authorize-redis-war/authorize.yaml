@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
-kind: DaemonSet
+kind: StatefulSet
 metadata:
   name: authorize-2
   namespace: docker-pv
 spec:
-#  replicas: 1
+  replicas: 1
   template:
     metadata:
       namespace: docker-pv
