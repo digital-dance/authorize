@@ -25,7 +25,7 @@ WORKDIR ${BUILD_WORKDIR}
 
 COPY docker-source/8 /tomcat/8
 
-COPY ${WAR_FILE} /tomcat/8/webapps/authorize.war
+#COPY ${WAR_FILE} /tomcat/8/webapps/authorize.war
 
 COPY ${SH_FILE} /tomcat/authorize-start.sh
 
@@ -53,7 +53,7 @@ ENV CATALINA_BASE=/tomcat/8
 ENV PATH=/sbin:$JAVA_HOME/bin:$CATALINA_HOME/lib:$CATALINA_HOME/bin:$PATH
 
 
-EXPOSE ${SERVER_PORT}
+EXPOSE 8080
 
 ENTRYPOINT ["/tomcat/8/bin/startup.sh","run"]
 #CMD /tomcat/8/bin/startup.sh &
