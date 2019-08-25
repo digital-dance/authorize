@@ -32,10 +32,21 @@ ls -lrt  /usr/lib/jvm/default-jvm/bin/java
 ls -lrt  /usr/lib/jvm/default-jvm
 ls -lrt  /usr/lib/jvm/java-8-oracle
 
-#echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
-#echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
-#
-#echo 'export PATH=$PATH:$TOMCAT_HOME/bin' >> /etc/profile
-#source /etc/profile
+#export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+#export PATH=$JAVA_HOME/bin:$PATH
+#export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+echo 'export JAVA_HOME=/usr/lib/jvm/java-8-oracle' >> /etc/profile
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> /etc/profile
+echo 'export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar' >> /etc/profile
+
+echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
+echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
+
+echo 'export PATH=$PATH:$TOMCAT_HOME/bin' >> /etc/profile
+source /etc/profile
+
+echo 'JAVA_HOME='
+echo $JAVA_HOME
 
 #/tomcat/8/bin/catalina.sh start
