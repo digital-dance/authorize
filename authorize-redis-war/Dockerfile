@@ -1,9 +1,10 @@
 #FROM java:8
 FROM www.digital.dance.com:5001/repository/digital.dance.docker/alpine-oraclejdk8:8
 #VOLUME /app
-RUN mkdir -p /tomcat
+RUN mkdir -p /tomcat/8/
 
 RUN chmod -R 777 /tomcat
+RUN chmod -R 777 /tomcat/*
 
 RUN mkdir -p /app/logs/authorize
 
@@ -17,7 +18,7 @@ RUN echo ${BUILD_WORKDIR}
 
 WORKDIR ${BUILD_WORKDIR}
 
-COPY docker-source/8 /tomcat/
+COPY docker-source/8/* /tomcat/8/
 
 COPY ${WAR_FILE} /tomcat/8/webapps/authorize.war
 
