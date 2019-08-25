@@ -23,11 +23,11 @@ chmod -R 777 /app
 chmod -R 777 /app/*
 chmod -R 777 /app/logs/authorize
 chmod -R 777 /app/logs/authorize/logs
-
-echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
-echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
-
-echo 'export PATH=$PATH:$TOMCAT_HOME/bin' >> /etc/profile
-source /etc/profile
+echo 'chmod -R 777 /app/logs/authorize/logs'
+#echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
+#echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
+#
+#echo 'export PATH=$PATH:$TOMCAT_HOME/bin' >> /etc/profile
+#source /etc/profile
 
 #/tomcat/8/bin/catalina.sh start
