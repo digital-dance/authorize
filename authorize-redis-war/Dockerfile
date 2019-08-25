@@ -42,12 +42,12 @@ RUN chmod -R 777 /tomcat/8/*
 #RUN chmod -R 777 /app/logs/authorize/logs
 #ENTRYPOINT ["/tomcat/authorize-start.sh"]
 
-#ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-#ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-#ENV CATALINA_HOME /tomcat/8
-#ENV CATALINA_BASE /tomcat/8
-#ENV PATH $PATH:$JAVA_HOME/bin;$CATALINA_HOME/lib:$CATALINA_HOME/bin
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+ENV CATALINA_HOME /tomcat/8
+ENV CATALINA_BASE /tomcat/8
+ENV PATH $PATH:$JAVA_HOME/bin;$CATALINA_HOME/lib:$CATALINA_HOME/bin
 
 EXPOSE ${SERVER_PORT}
 
-CMD /tomcat/authorize-start.sh
+CMD /tomcat/8/bin/startup.sh
