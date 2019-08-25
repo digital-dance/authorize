@@ -30,6 +30,7 @@ which java
 ls -lrt  /usr/bin/java
 ls -lrt  /usr/lib/jvm/default-jvm/bin/java
 ls -lrt  /usr/lib/jvm/default-jvm
+ls -lrt  /usr/lib/jvm/java-8-oracle
 
 #echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
 #echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
