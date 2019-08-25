@@ -24,6 +24,10 @@ chmod -R 777 /app/*
 chmod -R 777 /app/logs/authorize
 chmod -R 777 /app/logs/authorize/logs
 echo 'chmod -R 777 /app/logs/authorize/logs'
+
+whereis java
+
+which java
 #echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
 #echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
 #
