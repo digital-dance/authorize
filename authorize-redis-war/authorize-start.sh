@@ -12,6 +12,9 @@ ls -l /tomcat/8/webapps
 echo 'ls -l /tomcat/8/webapps/ROOT'
 ls -l /tomcat/8/webapps/ROOT
 
+chmod -R 777 /tomcat/8/webapps
+chmod -R 777 /tomcat/8/webapps/*
+
 mkdir -p /app/logs
 mkdir -p /app/logs/authorize
 mkdir -p /app/logs/authorize/logs

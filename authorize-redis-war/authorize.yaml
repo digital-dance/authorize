@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: authorize
+  name: authorize-2
   namespace: docker-pv
 spec:
   replicas: 1
@@ -9,7 +9,7 @@ spec:
     metadata:
       namespace: docker-pv
       labels:
-        run: authorize
+        run: authorize-2
     spec:
       volumes:
         - name: task-pv-storage
@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
           - name: digital-dance-com
       containers:
-        - name: authorize
+        - name: authorize-2
           image: www.digital.dance.com:5001/repository/digital.dance.docker/authorize:v1
           imagePullPolicy: Always
           ports:
@@ -41,10 +41,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authorize
+  name: authorize-2
   namespace: docker-pv
   labels:
-    run: authorize
+    run: authorize-2
 spec:
   type: NodePort
   ports:
@@ -57,4 +57,4 @@ spec:
 #      targetPort: 443
 #      nodePort: 30023
   selector:
-    run: authorize
+    run: authorize-2
