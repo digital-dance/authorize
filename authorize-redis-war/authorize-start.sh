@@ -29,6 +29,8 @@ which java
 
 ls -lrt  /usr/bin/java
 ls -lrt  /usr/lib/jvm/default-jvm/bin/java
+ls -lrt  /usr/lib/jvm/default-jvm
+
 #echo 'export TOMCAT_HOME=/tomcat/8' >> /etc/profile
 #echo 'export CATALINA_HOME=/tomcat/8' >> /etc/profile
 #
