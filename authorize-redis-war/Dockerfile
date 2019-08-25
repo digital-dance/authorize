@@ -6,7 +6,7 @@ RUN mkdir -p /tomcat/8/
 
 RUN chmod -R 777 /tomcat
 RUN chmod -R 777 /tomcat/8
-RUN chmod -R 777 /tomcat/8/*
+
 #RUN chmod -R 777 /tomcat/8/logs
 
 RUN mkdir -p /app/logs/authorize
@@ -33,6 +33,10 @@ EXPOSE ${SERVER_PORT}
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/jar/mq-adapter-boot-zuul.jar"]
 RUN chmod -R 777 /tomcat/*
 RUN chmod -R 777 /tomcat/authorize-start.sh
+RUN chmod -R 777 /tomcat/8/*
+
 RUN chmod -R 777 /app
 RUN chmod -R 777 /app/*
+RUN chmod -R 777 /app/logs/authorize
+RUN chmod -R 777 /app/logs/authorize/*
 ENTRYPOINT ["/tomcat/authorize-start.sh"]
