@@ -28,7 +28,8 @@ WORKDIR ${BUILD_WORKDIR}
 
 #COPY docker-source/8 /tomcat/8
 
-COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
+COPY ${WAR_FILE} /usr/local/tomcat/webapps/
+#COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 
 #COPY ${SH_FILE} /tomcat/authorize-start.sh
 
@@ -39,8 +40,8 @@ COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 #RUN chmod -R 777 /tomcat/authorize-start.sh
 #RUN chmod -R 777 /tomcat/8/*
 #
-#RUN chmod -R 777 /app
-#RUN chmod -R 777 /app/*
+RUN chmod -R 777 /usr/local/tomcat
+RUN chmod -R 777 /usr/local/tomcat/*
 #RUN chmod -R 777 /app/logs/authorize
 #RUN chmod -R 777 /app/logs/authorize/logs
 #ENTRYPOINT ["/tomcat/authorize-start.sh"]
