@@ -154,40 +154,40 @@
 	<!-- 认证控制 sso Filter配置 -->
 
 
-	<filter>
-		<filter-name>loginFilter</filter-name>
-		<filter-class>com.digital.dance.framework.sso.filter.SSOLoginFilter</filter-class>
+	<!--<filter>-->
+		<!--<filter-name>loginFilter</filter-name>-->
+		<!--<filter-class>com.digital.dance.framework.sso.filter.SSOLoginFilter</filter-class>-->
 
-		<init-param>
-			<param-name>cas_web_site_name</param-name>
-			<param-value>user</param-value>
-		</init-param>
+		<!--<init-param>-->
+			<!--<param-name>cas_web_site_name</param-name>-->
+			<!--<param-value>user</param-value>-->
+		<!--</init-param>-->
 
-		<init-param>
-			<param-name>allowUrl</param-name>
-			<param-value>http://192.168.28.255:8008/#/home;http://192.168.28.255:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login.html;/login/</param-value>
-		</init-param>
-		<init-param>
-			<param-name>allowSuffix</param-name>
-			<param-value>css;js;jpg;png</param-value>
-		</init-param>
-		<init-param>
-			<param-name>bizloginUrl</param-name>
-			<param-value>http://192.168.28.255:8008/user/index/home</param-value>
-		</init-param>
-		<init-param>
-			<param-name>readonlyUrl</param-name>
-			<param-value>/index/home;/login/user;login/views/default</param-value>
-		</init-param>
-		<init-param>
-			<param-name>homePageUrl</param-name>
-			<param-value>http://192.168.28.255:8008/#/home</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>loginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+		<!--<init-param>-->
+			<!--<param-name>allowUrl</param-name>-->
+			<!--<param-value>http://192.168.0.112:8008/#/home;http://192.168.0.112:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login.html;/login/</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>allowSuffix</param-name>-->
+			<!--<param-value>css;js;jpg;png</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>bizloginUrl</param-name>-->
+			<!--<param-value>http://192.168.0.112:8008/user/index/home</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>readonlyUrl</param-name>-->
+			<!--<param-value>/index/home;/login/user;login/views/default</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>homePageUrl</param-name>-->
+			<!--<param-value>http://192.168.0.112:8008/#/home</param-value>-->
+		<!--</init-param>-->
+	<!--</filter>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>loginFilter</filter-name>-->
+		<!--<url-pattern>/*</url-pattern>-->
+	<!--</filter-mapping>-->
 	<!--
         <servlet>
             <servlet-name>loginFilter</servlet-name>
@@ -195,7 +195,7 @@
              初始化业务系统token验证URL，内容取决于验证servlet的mapping配置
             <init-param>
                 <param-name>bizloginUrl</param-name>
-                <param-value>http://192.168.28.255:8008/user/index/home</param-value>
+                <param-value>http://192.168.0.112:8008/user/index/home</param-value>
             </init-param>
         </servlet>
         <servlet-mapping>
@@ -205,26 +205,26 @@
         </servlet-mapping>
         -->
 	<!-- 权限控制 -->
-	<filter>
-		<filter-name>PermissionFilter</filter-name>
-		<filter-class>com.digital.dance.core.shiro.filter.PermissionFilter</filter-class>
+	<!--<filter>-->
+		<!--<filter-name>PermissionFilter</filter-name>-->
+		<!--<filter-class>com.digital.dance.core.shiro.filter.PermissionFilter</filter-class>-->
 
-		<init-param>
-			<param-name>allowUrl</param-name>
-			<param-value>http://192.168.28.255:8008/#/home;http://192.168.28.255:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login.html;/login/</param-value>
-		</init-param>
-		<init-param>
-			<param-name>allowSuffix</param-name>
-			<param-value>css;js;jpg;png</param-value>
-		</init-param>
+		<!--<init-param>-->
+			<!--<param-name>allowUrl</param-name>-->
+			<!--<param-value>http://192.168.0.112:8008/#/home;http://192.168.0.112:8008/user/login/views/login.jsp;/index/home;/login/user;login/views/default;/login/pubKey;/login/token/validation;/login/token/persistence;/login.html;/login/</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
+			<!--<param-name>allowSuffix</param-name>-->
+			<!--<param-value>css;js;jpg;png</param-value>-->
+		<!--</init-param>-->
 
-		<init-param>
-			<param-name>readonlyUrl</param-name>
-			<param-value>/index/home;/login/user;login/views/default</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>PermissionFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+		<!--<init-param>-->
+			<!--<param-name>readonlyUrl</param-name>-->
+			<!--<param-value>/index/home;/login/user;login/views/default</param-value>-->
+		<!--</init-param>-->
+	<!--</filter>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>PermissionFilter</filter-name>-->
+		<!--<url-pattern>/*</url-pattern>-->
+	<!--</filter-mapping>-->
 </web-app>

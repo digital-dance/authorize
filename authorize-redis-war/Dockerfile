@@ -28,7 +28,7 @@ WORKDIR ${BUILD_WORKDIR}
 
 #COPY docker-source/8 /tomcat/8
 
-COPY ${WAR_FILE} /usr/local/tomcat/webapps/
+COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 
 #COPY ${SH_FILE} /tomcat/authorize-start.sh
 

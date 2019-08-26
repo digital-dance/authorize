@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: authorize-2
   namespace: docker-pv
@@ -33,7 +33,7 @@ spec:
 #              hostPort: 443
 #              protocol: TCP
           volumeMounts:
-            - mountPath: "/app"
+            - mountPath: "/usr/local/tomcat/"
               name: task-pv-storage
 #    externalIPs:
 #      - 192.168.99.102
