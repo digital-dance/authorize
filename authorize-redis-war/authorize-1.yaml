@@ -33,7 +33,7 @@ spec:
 #              hostPort: 443
 #              protocol: TCP
           volumeMounts:
-            - mountPath: "/usr/local/tomcat/"
+            - mountPath: "/app"
               name: task-pv-storage
 #    externalIPs:
 #      - 192.168.99.102
