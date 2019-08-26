@@ -2,6 +2,7 @@
 #FROM www.digital.dance.com:5001/repository/digital.dance.docker/alpine-oraclejdk8:8
 #FROM tomcat
 FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v1
+
 #VOLUME /app
 #RUN mkdir -p /tomcat/8/
 #RUN mkdir -p /tomcat/8/logs/
