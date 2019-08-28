@@ -12,9 +12,9 @@ FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v1
 
 #RUN chmod -R 777 /tomcat/8/logs
 
-RUN mkdir -p /app
-RUN mkdir -p /app/logs
-RUN mkdir -p /app/logs/authorize/
+#RUN mkdir -p /app
+#RUN mkdir -p /app/logs
+#RUN mkdir -p /app/logs/authorize/
 
 ARG BUILD_WORKDIR
 
@@ -22,7 +22,7 @@ ARG WAR_FILE
 ARG SH_FILE
 ARG SERVER_PORT
 
-RUN echo ${BUILD_WORKDIR}
+#RUN echo ${BUILD_WORKDIR}
 
 WORKDIR ${BUILD_WORKDIR}
 
@@ -41,13 +41,13 @@ COPY ${WAR_FILE} /opt/apache-tomcat-8.0.36/webapps/authorize.war
 #RUN chmod -R 777 /tomcat/authorize-start.sh
 #RUN chmod -R 777 /tomcat/8/*
 #
-RUN chmod -R 777 /opt/apache-tomcat-8.0.36
-RUN chmod -R 777 /opt/apache-tomcat-8.0.36/*
+#RUN chmod -R 777 /opt/apache-tomcat-8.0.36
+#RUN chmod -R 777 /opt/apache-tomcat-8.0.36/*
 #RUN ln -s /usr/local/tomcat /app/tomcat
 
-RUN chmod -R 777 /app
-RUN chmod -R 777 /app/*
-RUN chmod -R 777 /app/logs/authorize
+#RUN chmod -R 777 /app
+#RUN chmod -R 777 /app/*
+#RUN chmod -R 777 /app/logs/authorize
 #ENTRYPOINT ["/usr/local/tomcat/authorize-start.sh"]
 
 

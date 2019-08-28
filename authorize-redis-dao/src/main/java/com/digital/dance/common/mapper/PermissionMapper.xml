@@ -98,23 +98,23 @@
     <select id="selectAll" resultMap="resultResourceMap">
         select resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy,
         operationResourceUrl, operationResourceHttpMethod, routingUrl
-        from sys_menu_resource
+         from sys_menu_resource
     </select>
     <select id="selectPagedAll" parameterType="com.digital.dance.common.model.SResource" resultMap="resultResourceMap">
-        select resourceId, menuId, operationResourceId, state, insertOn, insertBy, updateOn, updateBy,
-        operationResourceUrl, operationResourceHttpMethod, routingUrl
-        from sys_menu_resource where 1=1
+        select resourceId, menuId, operationResourceId as resourceName, state, insertOn, insertBy, updateOn, updateBy,
+        operationResourceUrl as matchPath, operationResourceHttpMethod as httpMethod, routingUrl
+         from sys_menu_resource where 1=1
         <if test="resourceId != null">
-            and resource_id =#{resourceId,jdbcType=VARCHAR}
+            and resourceId =#{resourceId,jdbcType=VARCHAR}
         </if>
         <if test="resourceName != null">
-            and resource_name =#{resourceName,jdbcType=VARCHAR}
+            and resourceName =#{resourceName,jdbcType=VARCHAR}
         </if>
         <!--<if test="httpMethod != null">-->
             <!--and httpMethod =#{httpMethod,jdbcType=VARCHAR}-->
         <!--</if>-->
         <if test="matchPath != null">
-            and match_path =#{matchPath,jdbcType=VARCHAR}
+            and operationResourceUrl =#{matchPath,jdbcType=VARCHAR}
         </if>
         <if test="type != null">
             and type =#{type,jdbcType=VARCHAR}
