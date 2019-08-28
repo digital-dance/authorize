@@ -52,7 +52,7 @@ spec:
 
           - path: /authorize
             backend:
-              serviceName: authorize
+              serviceName: authorize-2
               servicePort: 8080
 
           - path: /authorize
