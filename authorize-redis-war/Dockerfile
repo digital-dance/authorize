@@ -34,8 +34,6 @@ COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 
 #COPY ${SH_FILE} /usr/local/tomcat/authorize-start.sh
 
-
-
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/jar/mq-adapter-boot-zuul.jar"]
 #RUN chmod -R 777 /tomcat/*
 #RUN chmod -R 777 /tomcat/authorize-start.sh
