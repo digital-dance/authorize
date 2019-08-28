@@ -1,7 +1,7 @@
 #FROM java:8
 #FROM www.digital.dance.com:5001/repository/digital.dance.docker/alpine-oraclejdk8:8
 #FROM tomcat
-FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v1
+FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v2
 
 #VOLUME /app
 #RUN mkdir -p /tomcat/8/
@@ -29,8 +29,8 @@ WORKDIR ${BUILD_WORKDIR}
 #COPY docker-source/8 /tomcat/8
 
 #COPY ${WAR_FILE} /usr/local/tomcat/webapps/
-#COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
-COPY ${WAR_FILE} /opt/apache-tomcat-8.0.36/webapps/authorize.war
+COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
+#COPY ${WAR_FILE} /opt/apache-tomcat-8.0.36/webapps/authorize.war
 
 #COPY ${SH_FILE} /usr/local/tomcat/authorize-start.sh
 

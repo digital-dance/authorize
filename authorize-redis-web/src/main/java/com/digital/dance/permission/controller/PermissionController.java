@@ -57,7 +57,7 @@ public class PermissionController extends BaseController {
 	}
 
 	/**
-	 *
+	 *http://localhost:8008/authorize-redis-war-0.0.2-SNAPSHOT/permission/index?resourceId=1000&pageSize=1
 	 * @return
 	 */
 	@RequestMapping(value="index", method=RequestMethod.GET)
