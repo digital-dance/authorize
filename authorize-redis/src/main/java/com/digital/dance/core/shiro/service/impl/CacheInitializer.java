@@ -36,7 +36,7 @@ public class CacheInitializer implements
             reflushUserPrivilegeResourceCache( permissionService );
 
             System.out.println("=========================spring容器初始化完毕, reflushRoleBranchResourceCache执行完毕=========================");
-
+            LoggerUtils.info(CacheInitializer.class,"=========================spring容器初始化完毕, reflushRoleBranchResourceCache执行完毕=========================" );
         }
     }
 
@@ -55,7 +55,7 @@ public class CacheInitializer implements
             VCache.setVByList(key, rb);
         }
 
-        LoggerUtils.info(VCache.class,"reflushUserPrivilegeResourceCache执行完毕" );
+        LoggerUtils.info(CacheInitializer.class,"reflushUserPrivilegeResourceCache执行完毕" );
     }
 
     public static void reflushRoleBranchResourceCache(PermissionService permissionService) {
@@ -71,7 +71,7 @@ public class CacheInitializer implements
 
             VCache.setVByList(key, rb);
         }
-        LoggerUtils.info(VCache.class,"reflushRoleBranchResourceCache执行完毕" );
+        LoggerUtils.info(CacheInitializer.class,"reflushRoleBranchResourceCache执行完毕" );
     }
 
     public static List<ResourceBo> listRoleBranchResourceByKey( String roleId, String orgId, String departmentId ){
