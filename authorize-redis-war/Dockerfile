@@ -57,7 +57,6 @@ COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 #
 #ENV PATH=/sbin:$JAVA_HOME/bin:$CATALINA_HOME/lib:$CATALINA_HOME/bin:$PATH
 
-
 #EXPOSE 8080
 
 #ENTRYPOINT ["/tomcat/8/bin/startup.sh","run"]
