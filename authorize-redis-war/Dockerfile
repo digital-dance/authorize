@@ -48,7 +48,6 @@ COPY ${WAR_FILE} /usr/local/tomcat/webapps/authorize.war
 #RUN chmod -R 777 /app/logs/authorize
 #ENTRYPOINT ["/usr/local/tomcat/authorize-start.sh"]
 
-
 #ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle
 #ENV JRE_HOME=$JAVA_HOME/jre
 #ENV CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
