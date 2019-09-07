@@ -1,6 +1,8 @@
 #FROM java:8
 #FROM www.digital.dance.com:5001/repository/digital.dance.docker/alpine-oraclejdk8:8
 #FROM tomcat
+#FROM hub.c.163.com/library/tomcat:latest
+#FROM tomcat:8.5.38-jre8-alpine
 FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v2
 
 #VOLUME /app

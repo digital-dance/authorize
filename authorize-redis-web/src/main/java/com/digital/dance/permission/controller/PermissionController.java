@@ -57,6 +57,7 @@ public class PermissionController extends BaseController {
 	}
 
 	/**
+	 * http://www.mq.ingress/authorize/permission/index?resourceId=1000&pageSize=6
 	 *http://localhost:8008/authorize-redis-war-0.0.2-SNAPSHOT/permission/index?resourceId=1000&pageSize=1
 	 * @return
 	 */
@@ -79,6 +80,7 @@ public class PermissionController extends BaseController {
 
 
 	/**
+	 * http://www.mq.ingress/authorize/permission/resource?roleId=17&orgId=FB1&departmentId=FB1
 	 *http://localhost:8008/authorize-redis-war-0.0.2-SNAPSHOT/permission/resource?roleId=17&orgId=FB1&departmentId=FB1
 	 * @return
 	 */
@@ -103,6 +105,7 @@ public class PermissionController extends BaseController {
 	}
 
 	/**
+	 * http://www.mq.ingress/authorize/permission/resource/user?userId=1
 	 *http://localhost:8008/authorize-redis-war-0.0.2-SNAPSHOT/permission/resource/user?userId=1
 	 * @return
 	 */
