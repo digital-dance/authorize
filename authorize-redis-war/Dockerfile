@@ -3,6 +3,7 @@
 #FROM tomcat
 #FROM hub.c.163.com/library/tomcat:latest
 #FROM tomcat:8.5.38-jre8-alpine
+#FROM buglife/tomcat-apr:latest
 FROM www.digital.dance.com:5001/repository/digital.dance.docker/tomcat:v2
 
 #VOLUME /app
