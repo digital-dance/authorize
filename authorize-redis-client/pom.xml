@@ -169,11 +169,22 @@
 			<!--<classifier>pg</classifier>-->
 			<version>1.3.4.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+			<version>1.3.4.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
-			<version>1.6.4.RELEASE</version>
+			<version>1.7.2.RELEASE</version>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.data</groupId>-->
+			<!--<artifactId>spring-data-redis</artifactId>-->
+			<!--<version>1.6.4.RELEASE</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
@@ -441,11 +452,11 @@
 			<artifactId>spring-boot-autoconfigure</artifactId>
 			<version>1.5.4.RELEASE</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session</artifactId>
-			<version>1.3.1.RELEASE</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.session</groupId>-->
+			<!--<artifactId>spring-session</artifactId>-->
+			<!--<version>1.3.1.RELEASE</version>-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>com.digital.dance.framework</groupId>
