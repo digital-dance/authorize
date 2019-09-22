@@ -477,6 +477,16 @@
             <groupId>com.digital.dance.framework</groupId>
             <artifactId>framework.sso</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session-data-redis</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
         <!-- /Spring 升级4+ 依赖的JSON包 -->
 

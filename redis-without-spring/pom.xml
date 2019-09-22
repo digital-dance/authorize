@@ -86,18 +86,48 @@
 			<artifactId>framework.redis</artifactId>
 			<!--<classifier>pg</classifier>-->
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session-data-redis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.digital.dance.framework</groupId>
 			<artifactId>framework.codis</artifactId>
 			<!--<classifier>pg</classifier>-->
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session-data-redis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.digital.dance.framework</groupId>
 			<artifactId>framework.codis.impl</artifactId>
 			<!--<classifier>pg</classifier>-->
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.session</groupId>
+					<artifactId>spring-session-data-redis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!--<dependency>-->
