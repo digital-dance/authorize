@@ -1,23 +1,17 @@
 package com.digital.dance.client.core.shiro.service.impl;
 
-import com.digital.dance.client.core.shiro.filter.PermissionFilter;
-import com.digital.dance.client.core.shiro.filter.ShiroFilterUtils;
-import com.digital.dance.common.utils.Constants;
+import com.digital.dance.service.Request;
+import com.digital.dance.service.Response;
 import com.digital.dance.common.utils.GsonUtils;
-import com.digital.dance.common.utils.ResponseVo;
 import com.digital.dance.framework.infrastructure.commons.Log;
 import com.digital.dance.framework.infrastructure.commons.StringTools;
 import com.digital.dance.framework.sso.entity.LoginInfo;
 import com.digital.dance.framework.sso.entity.LoginUserRole;
-import com.digital.dance.framework.sso.filter.SSOLoginFilter;
 import com.digital.dance.permission.bo.ResourceBo;
 import com.digital.dance.service.Permission;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,6 +32,29 @@ public class PermissionImpl implements Permission {
             throws IOException, ServletException {
         boolean flag = false;
         String requestPath = request.getRequestURL().toString().toLowerCase();
+        //Matcher matcher = Pattern.matches(regex, input);
+        for (String passedPath : passedPaths) {
+            if(StringUtils.isBlank(passedPath)) continue;
+
+            Pattern pattern = Pattern.compile( passedPath.toLowerCase().replace("/", "\\/").replace("**", "(.*)?") );
+
+            Matcher matcher = pattern.matcher(requestPath);
+            flag = matcher.find();
+            if (flag) {
+                log.info(
+                        "sso client request path '" + requestPath + "'is matched,filter chain will be continued.");
+
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean isPassedRequest(String[] passedPaths, Request request, Response response) {
+        boolean flag = false;
+        String requestPath = request.getRequestPath().toLowerCase();
         //Matcher matcher = Pattern.matches(regex, input);
         for (String passedPath : passedPaths) {
             if(StringUtils.isBlank(passedPath)) continue;

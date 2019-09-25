@@ -6,6 +6,9 @@ import com.digital.dance.common.utils.Constants;
 import com.digital.dance.common.utils.GsonUtils;
 import com.digital.dance.common.utils.ResponseVo;
 import com.digital.dance.framework.infrastructure.commons.Log;
+import com.digital.dance.framework.infrastructure.commons.SessionManager;
+import com.digital.dance.framework.infrastructure.commons.SessionPullService;
+import com.digital.dance.framework.infrastructure.commons.SessionPushService;
 import com.digital.dance.framework.sso.entity.LoginInfo;
 import com.digital.dance.framework.sso.entity.LoginUserRole;
 import com.digital.dance.framework.sso.filter.SSOLoginFilter;
@@ -15,6 +18,8 @@ import com.digital.dance.service.Permission;
 
 import com.digital.dance.common.utils.SpringUtils;
 
+import com.digital.dance.service.Request;
+import com.digital.dance.service.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,6 +36,9 @@ public class PermissionHelper {
 	Log log = new Log(PermissionHelper.class);
 
 	private FilterConfig permissionFilterConfig = null;
+
+	protected SessionPullService sessionPullService;
+	protected SessionPushService sessionPushService;
 
 	@Autowired
 	private Permission permission;
@@ -177,6 +185,87 @@ public class PermissionHelper {
 		}
 
 	}
+
+	private boolean isPassedRequest(String[] passedPaths, Request request, Response response)
+			throws IOException, ServletException{
+
+		return getPermission().isPassedRequest( passedPaths, request, response );
+	}
+
+	public <SessionObj extends Object> Boolean isAllowed( Request request, Response response, SessionObj sessionObj)
+			throws IOException, ServletException {
+//		HttpServletRequest request = (HttpServletRequest) req;
+//
+//		HttpServletResponse response = (HttpServletResponse) rep;
+
+		String requestPath = request.getRequestPath();
+		String casLoginurl = this.ssologinManageHelper.getCasLoginurl();
+
+		//通过无需权限限制的资源
+		boolean passedFlag = isPassedRequest( passedPaths, request, response )
+				|| isPassedRequest( allowSuffix, request, response )
+				|| isPassedRequest( bizloginUrl, request, response );
+		if( passedFlag ){
+			return true;
+		}
+
+		if (requestPath.toLowerCase().indexOf(casLoginurl.split("\\?")[0].toLowerCase()) > -1){
+			log.info(
+					"sso client request path '" + requestPath + "'is in login page, filter chain will be continued.");
+			return true;
+		}
+		SessionManager.setSessionPullService(getSessionPullService());
+		LoginInfo loginInfo = SessionManager.getLoginInfoFromSession(sessionObj);
+
+		String requestHttpMethod = request.getRequestHttpMethod().toLowerCase();
+		boolean retValue = false;
+
+		//通过只读页
+		passedFlag = isPassedRequest( readonlyUrls, request, response );
+		if( loginInfo != null && passedFlag ){
+
+			return true;
+
+		}
+
+		if( loginInfo != null ) {
+			List<LoginUserRole> loginUserRoles = loginInfo.getUserRoles();
+			if( loginUserRoles == null || loginUserRoles.size() < 1 ){
+				loginUserRoles = PrivilegeCacheManager.getLoginUserRole( loginInfo.getUserId() );
+
+				loginInfo.setUserRoles(loginUserRoles);
+				SessionManager.setSessionPushService(getSessionPushService());
+				SessionManager.setLoginInfo2Session(loginInfo, sessionObj);
+			}
+
+		}
+
+		//验证基于角色的访问权限
+		if( loginInfo != null && loginInfo.getRolePrivilegeInd()
+				&& isAccessAllowedBasedRole( requestPath, requestHttpMethod, loginInfo) ){
+
+			return true;
+		} else if( loginInfo != null && !loginInfo.getRolePrivilegeInd()
+				&& isAccessAllowedBasedUser( requestPath, requestHttpMethod, loginInfo) ){
+			//通过基于用户的访问权限
+			return true;
+		} else {
+			ResponseVo responseVo = new ResponseVo();
+			responseVo.setCode(Constants.ReturnCode.NOPRIVILEGE.Code());
+			responseVo.setMsg("无访问权限:" + requestPath + ":" + requestHttpMethod);
+//			ShiroFilterUtils.responseOutput(response, responseVo);
+			return false;
+		}
+
+	}
+
+	/**
+	 *
+	 * @param requestPath
+	 * @param requestHttpMethod
+	 * @param loginInfo
+	 * @return
+	 */
 	protected boolean isAccessAllowedBasedRole(String requestPath, String requestHttpMethod, LoginInfo loginInfo) {
 
 		return getPermission().isAccessAllowedBasedRole( requestPath, requestHttpMethod, loginInfo );
@@ -276,5 +365,21 @@ public class PermissionHelper {
 
 	public void setPermissionFilterConfig(FilterConfig permissionFilterConfig) {
 		this.permissionFilterConfig = permissionFilterConfig;
+	}
+
+	public SessionPullService getSessionPullService() {
+		return sessionPullService;
+	}
+
+	public void setSessionPullService(SessionPullService sessionPullService) {
+		this.sessionPullService = sessionPullService;
+	}
+
+	public SessionPushService getSessionPushService() {
+		return sessionPushService;
+	}
+
+	public void setSessionPushService(SessionPushService sessionPushService) {
+		this.sessionPushService = sessionPushService;
 	}
 }

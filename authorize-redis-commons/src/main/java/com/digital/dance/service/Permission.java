@@ -15,6 +15,8 @@ public interface Permission {
     public boolean isPassedRequest(String[] passedPaths, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException;
 
+    public boolean isPassedRequest(String[] passedPaths, Request request, Response response);
+
     public boolean isAccessAllowedBasedRole(String requestPath, String requestHttpMethod, LoginInfo loginInfo);
 
     public boolean isAccessAllowedBasedUser(String requestPath, String requestHttpMethod, LoginInfo loginInfo);

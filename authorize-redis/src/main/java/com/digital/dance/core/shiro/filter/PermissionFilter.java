@@ -26,6 +26,9 @@ import com.digital.dance.framework.sso.util.LoginContext;
 import com.digital.dance.framework.sso.util.SSOLoginManageHelper;
 import com.digital.dance.permission.bo.ResourceBo;
 import com.digital.dance.service.Permission;
+import com.digital.dance.service.Request;
+import com.digital.dance.service.Response;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -103,6 +106,11 @@ public class PermissionFilter implements Filter, Permission {
 			}
 		}
 		return flag;
+	}
+
+	@Override
+	public boolean isPassedRequest(String[] passedPaths, Request request, Response response) {
+		throw new NotImplementedException("isPassedRequest method of Permission is not implemented in PermissionFilter.");
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse rep, FilterChain chain)
