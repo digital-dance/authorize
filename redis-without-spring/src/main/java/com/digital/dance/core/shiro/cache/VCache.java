@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-//import com.digital.dance.core.shiro.cache.SpringUtils;
 import com.digital.dance.framework.codis.Codis;
 
 import redis.clients.jedis.Jedis;
@@ -38,12 +37,39 @@ public class VCache {
 		if(redisFactory == null){
 			redisFactory = new SuperRedisFactory();
 		}
-		if( cacheConfigProperties.containsKey("codis.authpassword") )
-			redisFactory.setAuthpassword( cacheConfigProperties.get("codis.authpassword") );
+		if( cacheConfigProperties.containsKey("codis.authpassword") ) {
+			String pass = cacheConfigProperties.get("codis.authpassword");
+			if (pass != null && "" != pass) {
+				redisFactory.setAuthpassword( pass );
+			}
+		}else if( cacheConfigProperties.containsKey("redis.pass") ){
+			String pass = cacheConfigProperties.get("redis.pass");
+			if (pass != null && "" != pass) {
+				redisFactory.setAuthpassword( pass );
+			}
+		}
 
 		redisFactory.setConfig( jedisPoolConfig );
-		redisFactory.setSubSysName( cacheConfigProperties.get("codis.subSysName") );
-		redisFactory.setTimeout( Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") ) );
+		if( cacheConfigProperties.containsKey("codis.subSysName") )
+			redisFactory.setSubSysName( cacheConfigProperties.get("codis.subSysName") );
+
+		if( cacheConfigProperties.containsKey("redis.timeout") )
+			redisFactory.setTimeout( Integer.parseInt( cacheConfigProperties.get("redis.timeout") ) );
+
+		if( cacheConfigProperties.containsKey("redis.cache.timeout") )
+			redisFactory.setCacheTimeout( Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") ) );
+
+		if( cacheConfigProperties.containsKey("redis.cluster.maxRedirects") )
+			redisFactory.setMaxRedirects( Integer.parseInt( cacheConfigProperties.get("redis.cluster.maxRedirects") ) );
+
+		if( cacheConfigProperties.containsKey("redis.cluster.maxTotals") )
+			redisFactory.setMaxTotal( Integer.parseInt( cacheConfigProperties.get("redis.cluster.maxTotals") ) );
+
+		if( cacheConfigProperties.containsKey("redis.maxWait") )
+			redisFactory.setMaxWait( Integer.parseInt( cacheConfigProperties.get("redis.maxWait") ) );
+
+		if( cacheConfigProperties.containsKey("redis.cluster.maxWaitMills") )
+			redisFactory.setMaxWaitMills( Integer.parseInt( cacheConfigProperties.get("redis.cluster.maxWaitMills") ) );
 
 		if( cacheConfigProperties.containsKey("redis.nodes") )
 			redisFactory.setNodes( cacheConfigProperties.get("redis.nodes") );
@@ -52,11 +78,37 @@ public class VCache {
 				&& cacheConfigProperties.containsKey("spring.redis.host")
 				&& cacheConfigProperties.containsKey("spring.redis.port")
 				){
-			jedisPool = new redis.clients.jedis.JedisPool(jedisPoolConfig
-					, cacheConfigProperties.get("spring.redis.host")
-					, Integer.parseInt( cacheConfigProperties.get("spring.redis.port") )
-					, Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") )
-			);
+			if( cacheConfigProperties.containsKey("codis.authpassword") ){
+
+				String pass = cacheConfigProperties.get("codis.authpassword");
+				if (pass != null && "" != pass) {
+					redisFactory.setAuthpassword(cacheConfigProperties.get("redis.pass"));
+					jedisPool = new redis.clients.jedis.JedisPool(jedisPoolConfig
+							, cacheConfigProperties.get("spring.redis.host")
+							, Integer.parseInt( cacheConfigProperties.get("spring.redis.port") )
+							, Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") )
+							, pass
+					);
+				}
+			} else if( cacheConfigProperties.containsKey("redis.pass") ){
+				String pass = cacheConfigProperties.get("redis.pass");
+				if (pass != null && "" != pass) {
+					redisFactory.setAuthpassword(cacheConfigProperties.get("redis.pass"));
+					jedisPool = new redis.clients.jedis.JedisPool(jedisPoolConfig
+							, cacheConfigProperties.get("spring.redis.host")
+							, Integer.parseInt( cacheConfigProperties.get("spring.redis.port") )
+							, Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") )
+							, pass
+					);
+				}
+			} else {
+				jedisPool = new redis.clients.jedis.JedisPool(jedisPoolConfig
+						, cacheConfigProperties.get("spring.redis.host")
+						, Integer.parseInt( cacheConfigProperties.get("spring.redis.port") )
+						, Integer.parseInt( cacheConfigProperties.get("redis.cache.timeout") )
+				);
+			}
+
 			redisFactory.setProxyHost( cacheConfigProperties.get("spring.redis.host") );
 			redisFactory.setPort( Integer.parseInt( cacheConfigProperties.get("spring.redis.port") ) );
 		}
@@ -99,7 +151,7 @@ public class VCache {
 
 		if(J == null) {
 
-				LoggerUtils.fmtError( VCache.class, "getJ失败, call  [%s] first.", "setCacheConfigProperties(java.util.Map<String, String> pCacheConfigProperties)" );
+			LoggerUtils.fmtError( VCache.class, "getJ失败, call  [%s] first.", "setCacheConfigProperties(java.util.Map<String, String> pCacheConfigProperties)" );
 
 		}
 		return J;
@@ -170,7 +222,7 @@ public class VCache {
 		}
 
 	}
-	
+
 	/**
 	 * 简单的Get
 	 * @param <T>
@@ -186,11 +238,11 @@ public class VCache {
 			jedis = getJ().getCodis();
 
 			return jedis.get(key, requiredType);
-        } catch (Exception e) {
-            isBroken = true;
+		} catch (Exception e) {
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] get失败", e.getMessage() );
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 
 		return null;
 	}
@@ -207,11 +259,11 @@ public class VCache {
 			jedis = getJ().getCodis();
 
 			jedis.set(key, value);
-        } catch (Exception e) {
-            isBroken = true;
+		} catch (Exception e) {
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] set失败", e.getMessage() );
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 
 	}
 	/**
@@ -228,12 +280,12 @@ public class VCache {
 			jedis = getJ().getCodis();
 
 			jedis.setex(key, timer, value);
-        } catch (Exception e) {
-            isBroken = true;
+		} catch (Exception e) {
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] setex失败", e.getMessage() );
-            e.printStackTrace();
-        }
-		
+			e.printStackTrace();
+		}
+
 	}
 	public static <K> Boolean expire(String key, int timeout, final TimeUnit unit) {
 		//JedisManager J = SpringContextUtil.getBean("jedisManager", JedisManager.class);
@@ -287,7 +339,7 @@ public class VCache {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param <T>
 	 * @param mapkey map
 	 * @param key	 map里的key
@@ -311,7 +363,7 @@ public class VCache {
 		return null;
 	}
 	/**
-	 * 
+	 *
 	 * @param mapkey map
 	 * @param key	 map里的key
 	 * @param value   map里的value
@@ -324,11 +376,11 @@ public class VCache {
 			jedis = getJ().getCodis();
 
 			jedis.setVByMap( mapkey, key, value );
-        } catch (Exception e) {
-            isBroken = true;
+		} catch (Exception e) {
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] setVByMap失败", e.getMessage() );
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 
 	}
 	/**
@@ -353,10 +405,10 @@ public class VCache {
 
 		return new Long(0);
 	}
-	
+
 	/**
 	 * 往redis里取set整个集合
-	 * 
+	 *
 	 * @param <T>
 	 * @param setKey
 
@@ -431,7 +483,7 @@ public class VCache {
 			jedis = getJ().getCodis();
 
 			return jedis.srandmember( key );
-		} catch (Exception e){ 
+		} catch (Exception e){
 			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] srandmember失败", e.getMessage() );
 			e.printStackTrace();
@@ -452,13 +504,13 @@ public class VCache {
 
 			jedis.setVBySet( setKey, value);
 		} catch (Exception e) {
-            isBroken = true;
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] setVBySet失败", e.getMessage() );
-            e.printStackTrace();
-        }
+			e.printStackTrace();
+		}
 	}
 	/**
-	 * 取set 
+	 * 取set
 	 * @param key
 	 * @return
 	 */
@@ -471,15 +523,15 @@ public class VCache {
 
 			return jedis.getSetByKey( key );
 		} catch (Exception e) {
-            isBroken = true;
+			isBroken = true;
 			LoggerUtils.fmtError( VCache.class, e, " [%s] getSetByKey失败", e.getMessage() );
-            e.printStackTrace();
-        }
-        return null;
-		 
+			e.printStackTrace();
+		}
+		return null;
+
 	}
-	
-	
+
+
 	/**
 	 * 往redis里的List里存元素
 	 * @param listKey
@@ -542,7 +594,7 @@ public class VCache {
 	}
 	/**
 	 * 往redis里取list
-	 * 
+	 *
 	 * @param <T>
 	 * @param listKey
 	 * @param start
@@ -620,6 +672,7 @@ public class VCache {
 			return jedis.exists(existskey);
 		} catch (Exception e) {
 			isBroken = true;
+			LoggerUtils.fmtError( VCache.class, e, " [%s] exists失败", e.getMessage() );
 			e.printStackTrace();
 		}
 		return false;
@@ -630,9 +683,28 @@ public class VCache {
 	 * @param isBroken
 	 */
 	public static void returnResource(Jedis jedis, boolean isBroken) {
-        if (jedis == null)
-            return;
+		if (jedis == null)
+			return;
 
-        jedis.close();
+		jedis.close();
+	}
+
+	public static Long setnx(final String key, final Object value, final long seconds) {
+		Codis jedis = null;
+		boolean isBroken = false;
+		Long result = 0L;
+		try {
+			jedis = getJ().getCodis();
+
+			result = jedis.setnx(key, value);
+			if (result == 1) {
+				jedis.expire(key, seconds);
+			}
+		} catch (Exception e) {
+			isBroken = true;
+			LoggerUtils.fmtError(VCache.class, e, " [%s] setnx失败", e.getMessage());
+			e.printStackTrace();
+		}
+		return result;
 	}
 }
